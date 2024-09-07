@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "752974853469",
+    "project_id": "fir-version-2b0c8",
+    "storage_bucket": "fir-version-2b0c8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:752974853469:android:6a50436512e82e77af64b4",
+        "android_client_info": {
+          "package_name": "com.skyforge.moment"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "752974853469-m7ljhrjhofi1orv66et38d0kdm70arl1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDUfqSpeeQR65wLbcfJ6-tfGnd43HLCXtE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "752974853469-m7ljhrjhofi1orv66et38d0kdm70arl1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
