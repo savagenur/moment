@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:moment/features/snapper/views/profile/snapper_profile_page.dart';
 import 'package:moment/features/snapper/views/shift/snapper_shift_page.dart';
 import 'package:moment/features/snapper/views/shift_history/snapper_shift_history_page.dart';
 
@@ -36,8 +37,7 @@ class _NavigationPageState extends ConsumerState<SnapperNavigationPage> {
   List<Widget> get _pages => [
         SnapperShiftPage(),
         SnapperShiftHistoryPage(),
-        Container(),
-        Container(),
+        SnapperProfilePage(),
       ];
 
   List<BottomNavigationBarItem> get _items => const [

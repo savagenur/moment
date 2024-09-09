@@ -9,9 +9,9 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:auto_route/auto_route.dart' as _i7;
+import 'package:moment/features/auth/views/sign_in/sign_in_page.dart' as _i1;
 import 'package:moment/features/snapper/views/navigation/snapper_navigation/snapper_navigation_page.dart'
-    as _i1;
-import 'package:moment/features/auth/views/sign_in/sign_in_page.dart' as _i2;
+    as _i2;
 import 'package:moment/features/snapper/views/shift_end/snapper_shift_end_page.dart'
     as _i3;
 import 'package:moment/features/snapper/views/shift_process/shift_process_page.dart'
@@ -22,26 +22,7 @@ import 'package:moment/features/snapper/views/shift_start_report/snapper_shift_s
     as _i6;
 
 /// generated route for
-/// [_i1.SnapperNavigationPage]
-class NavigationRoute extends _i7.PageRouteInfo<void> {
-  const NavigationRoute({List<_i7.PageRouteInfo>? children})
-      : super(
-          NavigationRoute.name,
-          initialChildren: children,
-        );
-
-  static const String name = 'NavigationRoute';
-
-  static _i7.PageInfo page = _i7.PageInfo(
-    name,
-    builder: (data) {
-      return const _i1.SnapperNavigationPage();
-    },
-  );
-}
-
-/// generated route for
-/// [_i2.SignInPage]
+/// [_i1.SignInPage]
 class SignInRoute extends _i7.PageRouteInfo<void> {
   const SignInRoute({List<_i7.PageRouteInfo>? children})
       : super(
@@ -54,7 +35,26 @@ class SignInRoute extends _i7.PageRouteInfo<void> {
   static _i7.PageInfo page = _i7.PageInfo(
     name,
     builder: (data) {
-      return const _i2.SignInPage();
+      return const _i1.SignInPage();
+    },
+  );
+}
+
+/// generated route for
+/// [_i2.SnapperNavigationPage]
+class SnapperNavigationRoute extends _i7.PageRouteInfo<void> {
+  const SnapperNavigationRoute({List<_i7.PageRouteInfo>? children})
+      : super(
+          SnapperNavigationRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'SnapperNavigationRoute';
+
+  static _i7.PageInfo page = _i7.PageInfo(
+    name,
+    builder: (data) {
+      return const _i2.SnapperNavigationPage();
     },
   );
 }

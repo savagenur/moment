@@ -10,7 +10,7 @@ class AppRouter extends RootStackRouter {
   @override
   List<AutoRoute> get routes => [
         AutoRoute(
-          page: NavigationRoute.page,
+          page: SnapperNavigationRoute.page,
           initial: true,
         ),
         AutoRoute(

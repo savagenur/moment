@@ -1,7 +1,7 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:moment/features/app/injection_container.dart';
 import 'package:moment/features/app/routes/app_router.gr.dart';
-
-final isAuthenticated = true;
+import 'package:moment/features/auth/repos/auth_repo.dart';
 
 class AuthGuard extends AutoRouteGuard {
   const AuthGuard();
@@ -15,6 +15,7 @@ class AuthGuard extends AutoRouteGuard {
     }
     // the navigation is paused until resolver.next() is called with either
     // true to resume/continue navigation or false to abort navigation
+    final isAuthenticated = sl<AuthRepo>().isAuthenticated;
     if (isAuthenticated) {
       // if user is authenticated we continue
       resolver.next(true);
