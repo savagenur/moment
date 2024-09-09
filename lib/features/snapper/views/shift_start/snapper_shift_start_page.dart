@@ -3,12 +3,14 @@ import 'package:auto_route/auto_route.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
 
 import 'package:moment/core/constants/design_dimensions.dart';
 import 'package:moment/core/extensions/build_context_extension.dart';
 import 'package:moment/core/extensions/to_double_extension.dart';
 import 'package:moment/features/app/routes/app_router.gr.dart';
 import 'package:moment/features/app/widgets/primary_button.dart';
+import 'package:moment/features/photo/repos/photo_repo.dart';
 import 'package:moment/features/snapper/models/snapper_mocks.dart';
 import 'package:moment/features/snapper/views/widgets/snapper_shift_detail_item.dart';
 
@@ -27,9 +29,15 @@ class SnapperShiftStartPage extends ConsumerWidget {
         child: Column(
           children: [
             SnapperShiftDetailItem(
-                index: "1",
-                title: "Clothes Photo",
-                imageUrl: SnapperMocks.clothImage),
+              index: "1",
+              title: "Clothes Photo",
+              imageUrl: SnapperMocks.clothImage,
+              trailing: IconButton(
+                  onPressed: () {
+                    PhotoRepo.recordVideo(ImageSource.camera);
+                  },
+                  icon: Icon(Icons.camera_alt_outlined)),
+            ),
             SnapperShiftDetailItem(
                 index: "2",
                 title: "Workplace Photo",
@@ -46,10 +54,15 @@ class SnapperShiftStartPage extends ConsumerWidget {
                 index: "5",
                 title: "Wires Photo",
                 imageUrl: SnapperMocks.clothImage),
+            Divider(),
             SnapperShiftDetailItem(
               index: "6",
               title: "Shift start report",
-              onAdd: () => context.pushRoute(const SnapperShiftStartReportRoute()),
+              onTap: () =>
+                  context.pushRoute(const SnapperShiftStartReportRoute()),
+              trailing: Icon(
+                Icons.add,
+              ),
             ),
           ],
         ),

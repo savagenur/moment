@@ -6,5 +6,7 @@ final sl = GetIt.instance;
 
 Future<void> initDependencies() async {
   sl.registerSingleton(AppRouter());
-  sl.registerSingleton(InternetConnection());
+  sl.registerSingleton(
+    InternetConnection(),
+  );
 }

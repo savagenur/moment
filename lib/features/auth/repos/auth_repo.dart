@@ -39,7 +39,6 @@ class AuthRepo {
         ),
       );
     } on FirebaseAuthException catch (e) {
-
       return Left(
         AppFailure(
           message: e.message,

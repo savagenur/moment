@@ -9,7 +9,7 @@ class SnapperShiftDetailItem extends StatelessWidget {
   final DateTime? date;
   final String? imageUrl;
   final VoidCallback? onTap;
-  final VoidCallback? onAdd;
+  final Widget? trailing;
   
   const SnapperShiftDetailItem({
     super.key,
@@ -18,7 +18,7 @@ class SnapperShiftDetailItem extends StatelessWidget {
     this.date,
      this.imageUrl,
     this.onTap,
-    this.onAdd,
+    this.trailing,
   });
 
   @override
@@ -50,12 +50,7 @@ class SnapperShiftDetailItem extends StatelessWidget {
             ),
         ],
       ),
-      trailing: IconButton(
-        onPressed: onAdd ?? () {},
-        icon: Icon(
-          imageUrl != null ? Icons.edit : Icons.add,
-        ),
-      ),
+      trailing: trailing,
     );
   }
 }
