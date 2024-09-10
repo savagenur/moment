@@ -11,10 +11,14 @@ class SnapperShiftPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final snapperShiftViewModel = ref.read(snapperShiftViewModelProvider.notifier);
-    final activeShifts = ref.watch(snapperShiftViewModelProvider).value?.activeShifts;
+    final snapperShiftViewModel =
+        ref.read(snapperShiftViewModelProvider.notifier);
+    final activeShifts =
+        ref.watch(snapperShiftViewModelProvider).value?.activeShifts;
     useEffect(() {
-      ref.read(snapperShiftViewModelProvider.notifier).onSnapperShiftListening();
+      ref
+          .read(snapperShiftViewModelProvider.notifier)
+          .onSnapperShiftListening();
       return () {};
     }, []);
     return Scaffold(
@@ -27,6 +31,7 @@ class SnapperShiftPage extends HookConsumerWidget {
           final activeShift = activeShifts![index] as SnapperShift;
           return ExpansionTile(
             controlAffinity: ListTileControlAffinity.leading,
+            enabled: index == 0,
             title: Row(
               children: [
                 Expanded(

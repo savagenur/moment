@@ -15,6 +15,7 @@ abstract class BaseStartReportModel {
 
 @freezed
 class StartReportModel with _$StartReportModel {
+  @Implements<BaseStartReportModel>()
   const factory StartReportModel.snapper({
     final String? id,
     final String? shiftId,
@@ -28,6 +29,8 @@ class StartReportModel with _$StartReportModel {
     final int? startBrokenPaperSets,
     final int? startPrints,
   }) = SnapperStartReport;
+  
+  @Implements<BaseStartReportModel>()
   const factory StartReportModel.assistant({
     final String? id,
     final String? shiftId,

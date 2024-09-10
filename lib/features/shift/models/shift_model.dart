@@ -22,6 +22,7 @@ sealed class ShiftModel with _$ShiftModel {
     final String? userFullName,
     final String? userRole,
   }) = ManagerShift;
+
   @Implements<BaseShiftModel>()
   const factory ShiftModel.assistant({
     final String? id,
@@ -30,7 +31,6 @@ sealed class ShiftModel with _$ShiftModel {
     final String? userFullName,
     final String? userRole,
     final StartReportModel? startReportModel,
-
   }) = AssistantShift;
   @Implements<BaseShiftModel>()
   const factory ShiftModel.owner({
