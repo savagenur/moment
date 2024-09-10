@@ -1,27 +1,37 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fpdart/fpdart.dart';
+import 'package:moment/core/enums/user_role.dart';
 import 'package:moment/core/failure/failure.dart';
 import 'package:moment/core/utils.dart';
-import 'package:moment/features/app/injection_container.dart';
-import 'package:moment/features/app/routes/app_router.dart';
 import 'package:moment/features/auth/models/user/user_model.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 class AuthRepo {
-  final _firebaseAuth = FirebaseAuth.instance;
   Future<void> createUserWithEmailAndPassword(
       String email, String password) async {
     try {
-      await _firebaseAuth.createUserWithEmailAndPassword(
-          email: email, password: password);
+      await firebaseAuth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      final user = UserModel(
+        id: getUserId,
+        email: email,
+        name: "Nurbolot",
+        role: UserRole.snapper.text,
+      );
+      // Sign-in successful
+      await firestore.collection("users").doc(getUserId).set(
+            user.toJson(),
+          );
     } catch (e) {
       logger.e('Error: $e');
     }
   }
 
-  User? get currentUser => _firebaseAuth.currentUser;
-  bool get isAuthenticated => _firebaseAuth.currentUser != null;
-  String? get getUserId => _firebaseAuth.currentUser?.uid;
+  User? get currentUser => firebaseAuth.currentUser;
+  bool get isAuthenticated => firebaseAuth.currentUser != null;
+  String? get getUserId => firebaseAuth.currentUser?.uid;
 
   Future<Either<AppFailure, UserModel>> signInWithEmailAndPassword(
       String email, String password) async {
@@ -31,12 +41,21 @@ class AuthRepo {
         email: email,
         password: password,
       );
+      final user = UserModel(
+        id: getUserId,
+        email: userCredential.user?.email,
+        name: "Nurbolot",
+        role: UserRole.snapper.text,
+      );
       // Sign-in successful
+      await firestore.collection("users").doc(getUserId).set(
+            user.toJson(),
+            SetOptions(
+              merge: true,
+            ),
+          );
       return Right(
-        UserModel(
-          email: userCredential.user?.email,
-          username: userCredential.user?.displayName,
-        ),
+        user,
       );
     } on FirebaseAuthException catch (e) {
       return Left(
@@ -49,7 +68,7 @@ class AuthRepo {
 
   Future<void> signOut() async {
     try {
-      await _firebaseAuth.signOut();
+      await firebaseAuth.signOut();
     } catch (_) {}
   }
 }
