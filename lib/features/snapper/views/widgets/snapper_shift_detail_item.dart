@@ -1,24 +1,28 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:moment/core/constants/design_dimensions.dart';
+import 'package:moment/core/enums/snapper_shift_photo_type.dart';
 import 'package:moment/core/extensions/build_context_extension.dart';
+import 'package:moment/features/shift/models/shift/shift_model.dart';
 
 class SnapperShiftDetailItem extends StatelessWidget {
   final String index;
   final String title;
   final DateTime? date;
-  final String? imageUrl;
+  final ShiftModel? shift;
+  final SnapperShiftPhotoType shiftPhotoType;
   final VoidCallback? onTap;
   final Widget? trailing;
-  
+
   const SnapperShiftDetailItem({
     super.key,
     required this.index,
     required this.title,
     this.date,
-     this.imageUrl,
     this.onTap,
     this.trailing,
+    this.shift,
+    this.shiftPhotoType = SnapperShiftPhotoType.none,
   });
 
   @override
@@ -41,16 +45,34 @@ class SnapperShiftDetailItem extends StatelessWidget {
                 ),
             ],
           ),
-          if (imageUrl != null)
-            CachedNetworkImage(
-              width: 40,
-              height: 40,
-              fit: BoxFit.cover,
-              imageUrl: imageUrl!,
-            ),
+          buildImage()
         ],
       ),
       trailing: trailing,
     );
+  }
+
+  Widget buildImage() {
+    // assert(shiftLocal != null || shiftRemote != null);
+    
+    final latestPhoto = shiftPhotoType.getPhoto(shift as SnapperShift?);
+    if (latestPhoto?.file != null) {
+      return Image.file(
+        latestPhoto!.file!,
+        width: 40,
+        fit: BoxFit.cover,
+      );
+    }
+
+    // If only remote photo exists
+    if (latestPhoto?.imageUrl != null) {
+      return CachedNetworkImage(
+        imageUrl: latestPhoto!.imageUrl!,
+        width: 40,
+        fit: BoxFit.cover,
+      );
+    }
+
+    return const SizedBox();
   }
 }

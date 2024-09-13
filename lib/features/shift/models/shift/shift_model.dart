@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:moment/features/photo/models/photo/photo_model.dart';
 import 'package:moment/features/shift/models/snapper_start_report/snapper_start_report_model.dart';
 
 part 'shift_model.freezed.dart';
@@ -10,6 +11,7 @@ abstract class BaseShiftModel {
   String? get restaurantId;
   String? get userFullName;
   String? get userRole;
+  DateTime? get createdAt;
 }
 
 @freezed
@@ -21,6 +23,7 @@ sealed class ShiftModel with _$ShiftModel {
     final String? restaurantId,
     final String? userFullName,
     final String? userRole,
+    required final DateTime? createdAt,
   }) = ManagerShift;
 
   @Implements<BaseShiftModel>()
@@ -30,6 +33,7 @@ sealed class ShiftModel with _$ShiftModel {
     final String? restaurantId,
     final String? userFullName,
     final String? userRole,
+    required final DateTime? createdAt,
     final StartReportModel? startReportModel,
   }) = AssistantShift;
   @Implements<BaseShiftModel>()
@@ -39,27 +43,29 @@ sealed class ShiftModel with _$ShiftModel {
     final String? restaurantId,
     final String? userFullName,
     final String? userRole,
+    required final DateTime? createdAt,
   }) = OwnerShift;
   @Implements<BaseShiftModel>()
   const factory ShiftModel.snapper({
-    final String? id,
+   required final String? id,
     final String? userId,
-    final String? restaurantId,
+    required final String? restaurantId,
     final String? userFullName,
     final String? userRole,
+    required final DateTime? createdAt,
     final List<String>? assistants,
-    final String? restaurantName,
-    final DateTime? startTime,
+    required final String? restaurantName,
+    required final DateTime? startTime,
     final DateTime? endTime,
-    final int? status,
+    required final int? status,
     final int? photosSoldCard,
     final int? photosSoldCash,
-    final StartReportModel? startReportModel,
-    final String? clothesImageUrl,
-    final String? startWorkPlaceImageUrl,
-    final String? startCameraImageUrl,
-    final String? startLaptopImageUrl,
-    final String? startWiresImageUrl,
+    final SnapperStartReport? startReportModel,
+    final PhotoModel? clothesPhoto,
+    final PhotoModel? startWorkPlacePhoto,
+    final PhotoModel? startCameraPhoto,
+    final PhotoModel? startLaptopPhoto,
+    final PhotoModel? startWiresPhoto,
   }) = SnapperShift;
 
   factory ShiftModel.fromJson(Map<String, dynamic> json) =>
@@ -67,4 +73,3 @@ sealed class ShiftModel with _$ShiftModel {
         json,
       );
 }
-

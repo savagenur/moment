@@ -5,9 +5,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:moment/features/app/app.dart';
 import 'package:moment/features/app/injection_container.dart';
 import 'package:moment/features/auth/auth_di.dart';
-import 'package:moment/features/shift/models/shift_model.dart';
+import 'package:moment/features/shift/models/shift/shift_model.dart';
 import 'package:moment/features/shift/models/snapper_start_report/snapper_start_report_model.dart';
-import 'package:moment/features/shift/repos/shift_repo.dart';
+import 'package:moment/features/shift/repos/snapper_shift_repo.dart';
 import 'package:moment/firebase_options.dart';
 
 Future<void> main() async {
@@ -19,8 +19,18 @@ Future<void> main() async {
   await initAuthDependencies();
 //   await sl<ShiftRepo>().createShift(ShiftModel.snapper(
 //     status: 1,
+//     restaurantName: "New2",
+//     startTime: DateTime.now(),
+//     createdAt: DateTime.now(),
+//     startReportModel: StartReportModel.snapper(
+// restaurantName: "Odyssey"
+//     )
+//   ));
+//   await sl<ShiftRepo>().setLocalShift(ShiftModel.snapper(
+//     status: 1,
 //     restaurantName: "Forget me not",
 //     startTime: DateTime.now(),
+//     createdAt: DateTime.now(),
 //     startReportModel: StartReportModel.snapper(
 // restaurantName: "Odyssey"
 //     )

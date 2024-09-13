@@ -27,13 +27,18 @@ class SnapperShiftProcessPage extends ConsumerWidget {
         padding: DDimension.mediumPadding.all,
         child: Column(
           children: [
-            SnapperShiftDetailItem(
-                index: "1", title: "Restaurant Video", imageUrl: SnapperMocks.restaurantImage),
-            SnapperShiftDetailItem(
-                index: "2", title: "Restaurant Video", imageUrl: SnapperMocks.restaurantImage),
-            SnapperShiftDetailItem(
-                index: "3", title: "Restaurant Video", imageUrl: SnapperMocks.restaurantImage),
-            
+            // SnapperShiftDetailItem(
+            //   index: "1",
+            //   title: "Restaurant Video",
+            // ),
+            // SnapperShiftDetailItem(
+            //   index: "2",
+            //   title: "Restaurant Video",
+            // ),
+            // SnapperShiftDetailItem(
+            //   index: "3",
+            //   title: "Restaurant Video",
+            // ),
           ],
         ),
       ),
@@ -54,4 +59,3 @@ class SnapperShiftProcessPage extends ConsumerWidget {
     );
   }
 }
-

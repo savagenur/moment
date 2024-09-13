@@ -22,16 +22,16 @@ class SnapperShiftEndPage extends ConsumerWidget {
         padding: DDimension.mediumPadding.all,
         child: Column(
           children: [
-            SnapperShiftDetailItem(
-                index: "1", title: "Locker Photo", imageUrl: SnapperMocks.clothImage),
-            SnapperShiftDetailItem(
-                index: "2", title: "Workplace Photo", imageUrl: SnapperMocks.clothImage),
-            SnapperShiftDetailItem(
-                index: "3", title: "Camera Photo", imageUrl: SnapperMocks.clothImage),
-            SnapperShiftDetailItem(
-                index: "4", title: "Laptop Photo", imageUrl: SnapperMocks.clothImage),
-            SnapperShiftDetailItem(
-                index: "5", title: "Wires Photo", imageUrl: SnapperMocks.clothImage),
+            // SnapperShiftDetailItem(
+            //     index: "1", title: "Locker Photo", ),
+            // SnapperShiftDetailItem(
+            //     index: "2", title: "Workplace Photo", ),
+            // SnapperShiftDetailItem(
+            //     index: "3", title: "Camera Photo", ),
+            // SnapperShiftDetailItem(
+            //     index: "4", title: "Laptop Photo", ),
+            // SnapperShiftDetailItem(
+            //     index: "5", title: "Wires Photo", ),
           ],
         ),
       ),

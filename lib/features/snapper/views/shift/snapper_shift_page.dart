@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:moment/features/app/routes/app_router.gr.dart';
-import 'package:moment/features/shift/models/shift_model.dart';
+import 'package:moment/features/shift/models/shift/shift_model.dart';
 import 'package:moment/features/shift/view_models/snapper/snapper_shift_viewmodel.dart';
 
 class SnapperShiftPage extends HookConsumerWidget {
@@ -15,12 +15,7 @@ class SnapperShiftPage extends HookConsumerWidget {
         ref.read(snapperShiftViewModelProvider.notifier);
     final activeShifts =
         ref.watch(snapperShiftViewModelProvider).value?.activeShifts;
-    useEffect(() {
-      ref
-          .read(snapperShiftViewModelProvider.notifier)
-          .onSnapperShiftListening();
-      return () {};
-    }, []);
+    
     return Scaffold(
       appBar: AppBar(
         title: Text("Shift"),
@@ -40,7 +35,10 @@ class SnapperShiftPage extends HookConsumerWidget {
                   ),
                 ),
                 IconButton(
-                    onPressed: () {},
+                    onPressed: () async{
+                      await snapperShiftViewModel.getLocalShift();
+                      // await snapperShiftViewModel.setLocalShift();
+                    },
                     icon: Icon(
                       Icons.location_on,
                       color: Colors.green,
@@ -49,7 +47,9 @@ class SnapperShiftPage extends HookConsumerWidget {
             ),
             children: [
               ListTile(
-                onTap: () => context.pushRoute(const SnapperShiftStartRoute()),
+                onTap: () => context.pushRoute( SnapperShiftStartRoute(
+                  shiftRemote: activeShift,   
+                )),
                 title: Text("Start"),
                 trailing: Icon(Icons.arrow_forward_ios, color: Colors.grey),
               ),
