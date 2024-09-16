@@ -1,4 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:auto_route/auto_route.dart';
@@ -57,7 +58,7 @@ class SnapperShiftStartPage extends HookConsumerWidget {
 
                 // Print or inspect the content
                 result.forEach((row) {
-                  logger.i(row);
+                  log(row.toString());
                 });
               },
               child: Text("press"))
@@ -168,16 +169,16 @@ class SnapperShiftStartPage extends HookConsumerWidget {
             } else {
               if (!_isStartReportCompleted(shiftLatest.startReportModel)) {
                 Fluttertoast.showToast(
-                msg: "Please complete 'Shift start report'",
-                backgroundColor: Colors.red,
-                textColor: Colors.white,
-              );
+                  msg: "Please complete 'Shift start report'",
+                  backgroundColor: Colors.red,
+                  textColor: Colors.white,
+                );
               } else {
-                 Fluttertoast.showToast(
-                msg: "Please take all photos",
-                backgroundColor: Colors.red,
-                textColor: Colors.white,
-              );
+                Fluttertoast.showToast(
+                  msg: "Please take all photos",
+                  backgroundColor: Colors.red,
+                  textColor: Colors.white,
+                );
               }
             }
           },
@@ -194,11 +195,11 @@ class SnapperShiftStartPage extends HookConsumerWidget {
       startReportModel?.startPrints != null;
   bool _isSubmitValid(SnapperShift shift) {
     return _isStartReportCompleted(shift.startReportModel) &&
-        shift.clothesPhoto != null &&
-        shift.startWorkPlacePhoto != null &&
-        shift.startCameraPhoto != null &&
-        shift.startLaptopPhoto != null &&
-        shift.startWiresPhoto != null;
+        shift.startReportModel?.clothesPhoto != null &&
+        shift.startReportModel?.startWorkPlacePhoto != null &&
+        shift.startReportModel?.startCameraPhoto != null &&
+        shift.startReportModel?.startLaptopPhoto != null &&
+        shift.startReportModel?.startWiresPhoto != null;
   }
 
   void _addPhoto(

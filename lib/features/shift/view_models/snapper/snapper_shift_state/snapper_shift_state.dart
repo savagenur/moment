@@ -6,8 +6,8 @@ part 'snapper_shift_state.freezed.dart';
 @freezed
 class SnapperShiftState with _$SnapperShiftState {
   const factory SnapperShiftState({
-    @Default([]) final List<ShiftModel> activeShifts,
-    @Default([]) final List<ShiftModel> inactiveShifts,
+    @Default([]) final List<SnapperShift> activeShifts,
+    @Default([]) final List<SnapperShift> inactiveShifts,
     final ShiftModel? shiftLocal,
   }) = _SnapperShiftState;
 }

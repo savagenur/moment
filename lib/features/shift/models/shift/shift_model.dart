@@ -47,7 +47,7 @@ sealed class ShiftModel with _$ShiftModel {
   }) = OwnerShift;
   @Implements<BaseShiftModel>()
   const factory ShiftModel.snapper({
-   required final String? id,
+    required final String? id,
     final String? userId,
     required final String? restaurantId,
     final String? userFullName,
@@ -58,18 +58,12 @@ sealed class ShiftModel with _$ShiftModel {
     required final DateTime? startTime,
     final DateTime? endTime,
     required final int? status,
-    final int? photosSoldCard,
-    final int? photosSoldCash,
     final SnapperStartReport? startReportModel,
-    final PhotoModel? clothesPhoto,
-    final PhotoModel? startWorkPlacePhoto,
-    final PhotoModel? startCameraPhoto,
-    final PhotoModel? startLaptopPhoto,
-    final PhotoModel? startWiresPhoto,
   }) = SnapperShift;
 
   factory ShiftModel.fromJson(Map<String, dynamic> json) =>
       _$ShiftModelFromJson(
         json,
       );
+
 }

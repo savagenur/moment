@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:moment/features/photo/models/photo/photo_model.dart';
 
 part 'snapper_start_report_model.freezed.dart';
 part 'snapper_start_report_model.g.dart';
@@ -28,8 +29,13 @@ class StartReportModel with _$StartReportModel {
     final int? startPaperSets,
     final int? startBrokenPaperSets,
     final int? startPrints,
+    final PhotoModel? clothesPhoto,
+    final PhotoModel? startWorkPlacePhoto,
+    final PhotoModel? startCameraPhoto,
+    final PhotoModel? startLaptopPhoto,
+    final PhotoModel? startWiresPhoto,
   }) = SnapperStartReport;
-  
+
   @Implements<BaseStartReportModel>()
   const factory StartReportModel.assistant({
     final String? id,
@@ -43,4 +49,14 @@ class StartReportModel with _$StartReportModel {
       _$StartReportModelFromJson(
         json,
       );
+  static SnapperStartReport? forFirestore(SnapperStartReport? startReport) {
+    return startReport?.copyWith(
+      clothesPhoto: startReport.clothesPhoto?.copyWith(file: null),
+      startWorkPlacePhoto:
+          startReport.startWorkPlacePhoto?.copyWith(file: null),
+      startCameraPhoto: startReport.startCameraPhoto?.copyWith(file: null),
+      startLaptopPhoto: startReport.startLaptopPhoto?.copyWith(file: null),
+      startWiresPhoto: startReport.startWiresPhoto?.copyWith(file: null),
+    );
+  }
 }

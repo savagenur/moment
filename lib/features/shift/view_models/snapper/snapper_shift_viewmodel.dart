@@ -1,5 +1,8 @@
 import 'dart:async';
+import 'dart:io';
 
+import 'package:moment/core/enums/snapper_shift_photo_type.dart';
+import 'package:moment/core/utils.dart';
 import 'package:moment/features/app/injection_container.dart';
 import 'package:moment/features/shift/models/shift/shift_model.dart';
 import 'package:moment/features/shift/repos/snapper_shift_repo.dart';
@@ -39,7 +42,7 @@ class SnapperShiftViewModel extends _$SnapperShiftViewModel {
     });
   }
 
-  StreamSubscription<List<ShiftModel>> onInactiveShiftListener() {
+  StreamSubscription<List<SnapperShift>> onInactiveShiftListener() {
     final inactiveShiftStream = _shiftRepo.getSnapperShiftList(status: 0);
     return inactiveShiftStream.listen((inactiveShifts) {
       state = AsyncValue.data(state.value?.copyWith(
@@ -51,13 +54,11 @@ class SnapperShiftViewModel extends _$SnapperShiftViewModel {
     });
   }
 
-  Future<void> setLocalShift(ShiftModel shift) async {
+  Future<void> setLocalShift(SnapperShift shift) async {
     try {
-      if (shift is SnapperShift) {
-        await _shiftRepo.setLocalShift(shift);
+      await _shiftRepo.setLocalShift(shift);
         state = AsyncValue.data(
             state.value!.copyWith(shiftLocal: shift.copyWith()));
-      }
     } catch (e) {
       print(e);
     }
@@ -80,6 +81,27 @@ class SnapperShiftViewModel extends _$SnapperShiftViewModel {
       await _shiftRepo.updateShift(shift);
     } catch (e) {
       print(e);
+    }
+  }
+
+  Future<void> uploadMedia(
+    File file, {
+    required bool isVideo,
+    required String shiftId,
+    required SnapperShiftPhotoType snapperShiftPhotoType,
+  }) async {
+    try {
+      await _shiftRepo.uploadMedia(
+        file,
+        isVideo: isVideo,
+        shiftId: shiftId,
+        snapperShiftPhotoType: snapperShiftPhotoType,
+      );
+      state = AsyncValue.data(state.value!.copyWith(
+
+      ));
+    } catch (e) {
+      logger.e(e);
     }
   }
 }

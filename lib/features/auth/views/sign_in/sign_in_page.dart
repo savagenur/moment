@@ -40,7 +40,6 @@ class SignInPage extends HookConsumerWidget {
 
     final isLoading = useState(false);
     _authViewModelListener(ref, context, isLoading);
-    
 
     return Form(
       key: formKey.value,
