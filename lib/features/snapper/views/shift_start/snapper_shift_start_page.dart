@@ -12,6 +12,7 @@ import 'package:moment/core/constants/design_dimensions.dart';
 import 'package:moment/core/enums/snapper_shift_photo_type.dart';
 import 'package:moment/core/extensions/to_double_extension.dart';
 import 'package:moment/core/utils.dart';
+import 'package:moment/features/app/injection_container.dart';
 import 'package:moment/features/app/routes/app_router.gr.dart';
 import 'package:moment/features/app/widgets/primary_button.dart';
 import 'package:moment/features/photo/models/photo/photo_model.dart';

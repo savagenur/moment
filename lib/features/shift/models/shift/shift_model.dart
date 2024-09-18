@@ -58,6 +58,7 @@ sealed class ShiftModel with _$ShiftModel {
     required final DateTime? startTime,
     final DateTime? endTime,
     required final int? status,
+    @Default(SnapperStartReport())
     final SnapperStartReport? startReportModel,
   }) = SnapperShift;
 

@@ -3,13 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:moment/core/constants/design_dimensions.dart';
 import 'package:moment/core/enums/snapper_shift_photo_type.dart';
 import 'package:moment/core/extensions/build_context_extension.dart';
+import 'package:moment/features/app/widgets/loader.dart';
 import 'package:moment/features/shift/models/shift/shift_model.dart';
 
 class SnapperShiftDetailItem extends StatelessWidget {
   final String index;
   final String title;
   final DateTime? date;
-  final ShiftModel? shift;
+  final SnapperShift? shift;
   final SnapperShiftPhotoType shiftPhotoType;
   final VoidCallback? onTap;
   final Widget? trailing;
@@ -45,7 +46,14 @@ class SnapperShiftDetailItem extends StatelessWidget {
                 ),
             ],
           ),
-          buildImage()
+          Stack(
+            children: [
+              buildImage(),
+              if (shiftPhotoType.getPhoto(shift)?.isLoading ?? false)
+                const Positioned.fill(child: Loader(color: Colors.white,)),
+
+            ],
+          )
         ],
       ),
       trailing: trailing,
@@ -54,7 +62,7 @@ class SnapperShiftDetailItem extends StatelessWidget {
 
   Widget buildImage() {
     // assert(shiftLocal != null || shiftRemote != null);
-    
+
     final latestPhoto = shiftPhotoType.getPhoto(shift as SnapperShift?);
     if (latestPhoto?.file != null) {
       return Image.file(

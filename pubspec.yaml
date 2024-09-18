@@ -31,13 +31,14 @@ dependencies:
   async: ^2.11.0
   auto_route: ^9.2.2
   cached_network_image: ^3.4.1
-  cloud_firestore: ^4.14.0
+  cloud_firestore: ^5.4.2
   connectivity_plus: ^6.0.5
   cupertino_icons: ^1.0.8
   dio: ^5.7.0
-  firebase_auth: ^4.16.0
-  firebase_core: ^2.24.2
-  firebase_storage: ^11.6.5
+  # firebase_app_check: ^0.2.2
+  firebase_auth: ^5.3.0
+  firebase_core: ^3.5.0
+  firebase_storage: ^12.3.1
   flutter:
     sdk: flutter
   flutter_easyloading: ^3.0.5

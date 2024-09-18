@@ -68,7 +68,7 @@ class SnapperShiftRepo {
     try {
       String filePath =
           "uploads/${isVideo ? "videos" : "images"}/$shiftId/${snapperShiftPhotoType.text}";
-      Reference ref = storage.ref().child(filePath);
+      Reference ref = firebaseStorage.ref().child(filePath);
       UploadTask uploadTask = ref.putFile(file);
       uploadTask.snapshotEvents.listen(
         (snapshot) {

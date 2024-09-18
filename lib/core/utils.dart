@@ -9,7 +9,7 @@ import 'package:moment/core/constants/toast/toast_types.dart';
 final logger = Logger();
 final firebaseAuth = FirebaseAuth.instance;
 final firestore = FirebaseFirestore.instance;
-final FirebaseStorage storage = FirebaseStorage.instance;
+final FirebaseStorage firebaseStorage = FirebaseStorage.instance;
 
 void snackBar(
   BuildContext context, {

@@ -51,12 +51,11 @@ class StartReportModel with _$StartReportModel {
       );
   static SnapperStartReport? forFirestore(SnapperStartReport? startReport) {
     return startReport?.copyWith(
-      clothesPhoto: startReport.clothesPhoto?.copyWith(file: null),
-      startWorkPlacePhoto:
-          startReport.startWorkPlacePhoto?.copyWith(file: null),
-      startCameraPhoto: startReport.startCameraPhoto?.copyWith(file: null),
-      startLaptopPhoto: startReport.startLaptopPhoto?.copyWith(file: null),
-      startWiresPhoto: startReport.startWiresPhoto?.copyWith(file: null),
+      clothesPhoto: PhotoModel.forFirestore(startReport.clothesPhoto),
+      startWorkPlacePhoto:PhotoModel.forFirestore(startReport.startWorkPlacePhoto),
+      startCameraPhoto: PhotoModel.forFirestore(startReport.startCameraPhoto),
+      startLaptopPhoto: PhotoModel.forFirestore(startReport.startLaptopPhoto),
+      startWiresPhoto: PhotoModel.forFirestore(startReport.startWiresPhoto),
     );
   }
 }
