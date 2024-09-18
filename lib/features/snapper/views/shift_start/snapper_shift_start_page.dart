@@ -18,8 +18,9 @@ import 'package:moment/features/app/widgets/primary_button.dart';
 import 'package:moment/features/photo/models/photo/photo_model.dart';
 import 'package:moment/features/photo/repos/photo_repo.dart';
 import 'package:moment/features/shift/models/shift/shift_model.dart';
-import 'package:moment/features/shift/models/snapper_start_report/snapper_start_report_model.dart';
-import 'package:moment/features/shift/view_models/snapper/snapper_shift_viewmodel.dart';
+import 'package:moment/features/shift/models/shift_start/shift_start_model.dart';
+import 'package:moment/features/shift/models/start_report/start_report_model.dart';
+import 'package:moment/features/shift/view_models/snapper/bloc/snapper_shift_viewmodel.dart';
 import 'package:moment/features/snapper/models/snapper_shift_comparator.dart';
 import 'package:moment/features/snapper/views/widgets/snapper_shift_detail_item.dart';
 import 'package:sqflite/sqflite.dart';
@@ -35,10 +36,10 @@ class SnapperShiftStartPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final shiftViewModel = ref.watch(snapperShiftViewModelProvider).value;
+    final shiftViewModel = ref.watch(snapperShiftViewModelProvider);
     final shiftViewModelNotifier =
         ref.read(snapperShiftViewModelProvider.notifier);
-    final snapperShiftLocal = shiftViewModel?.shiftLocal as SnapperShift?;
+    final snapperShiftLocal = shiftViewModel.shiftLocal?.value as SnapperShift?;
     final snapperShiftRemote = shiftRemote as SnapperShift;
     final shiftComparator = SnapperShiftComparator(
       local: snapperShiftLocal,
@@ -143,7 +144,7 @@ class SnapperShiftStartPage extends HookConsumerWidget {
                 snapperShift: shiftLatest!,
               )),
               trailing: _isStartReportCompleted(
-                      (shiftLatest?.startReportModel as SnapperStartReport?))
+                      (shiftLatest?.shiftStart))
                   ? Icon(
                       Icons.checklist_rtl,
                       color: Colors.green,
@@ -168,7 +169,8 @@ class SnapperShiftStartPage extends HookConsumerWidget {
               // );
               Fluttertoast.showToast(msg: "Successfully saved");
             } else {
-              if (!_isStartReportCompleted(shiftLatest.startReportModel)) {
+              if (!_isStartReportCompleted(
+                  shiftLatest.shiftStart)) {
                 Fluttertoast.showToast(
                   msg: "Please complete 'Shift start report'",
                   backgroundColor: Colors.red,
@@ -188,19 +190,19 @@ class SnapperShiftStartPage extends HookConsumerWidget {
     );
   }
 
-  bool _isStartReportCompleted(SnapperStartReport? startReportModel) =>
-      startReportModel?.startFrames != null &&
-      startReportModel?.startBrokenFrames != null &&
-      startReportModel?.startPaperSets != null &&
-      startReportModel?.startBrokenPaperSets != null &&
-      startReportModel?.startPrints != null;
+  bool _isStartReportCompleted(SnapperShiftStart? shiftStart) =>
+      shiftStart?.startReport.startFrames != null &&
+      shiftStart?.startReport.startBrokenFrames != null &&
+      shiftStart?.startReport.startPaperSets != null &&
+      shiftStart?.startReport.startBrokenPaperSets != null &&
+      shiftStart?.startReport.startPrints != null;
   bool _isSubmitValid(SnapperShift shift) {
-    return _isStartReportCompleted(shift.startReportModel) &&
-        shift.startReportModel?.clothesPhoto != null &&
-        shift.startReportModel?.startWorkPlacePhoto != null &&
-        shift.startReportModel?.startCameraPhoto != null &&
-        shift.startReportModel?.startLaptopPhoto != null &&
-        shift.startReportModel?.startWiresPhoto != null;
+    return _isStartReportCompleted(shift.shiftStart) &&
+        shift.shiftStart?.clothesPhoto != null &&
+        shift.shiftStart?.startWorkPlacePhoto != null &&
+        shift.shiftStart?.startCameraPhoto != null &&
+        shift.shiftStart?.startLaptopPhoto != null &&
+        shift.shiftStart?.startWiresPhoto != null;
   }
 
   void _addPhoto(
@@ -214,10 +216,14 @@ class SnapperShiftStartPage extends HookConsumerWidget {
 
       PhotoModel? newPhoto = getPhotoModel(shiftLatest, photoFile);
 
-      final updatedShift =
-          photoType.updateShiftWithPhoto(shiftLatest, newPhoto)?.copyWith(
-                createdAt: DateTime.now(),
-              );
+      final updatedShift = shiftLatest!.copyWith(
+        shiftStart: shiftLatest.shiftStart!
+            .updateShiftStartPhoto(
+              photoType,
+              newPhoto: newPhoto!,
+            )!
+            .copyWith(createdAt: DateTime.now()),
+      );
 
       if (updatedShift != null) {
         shiftViewModelNotifier.setLocalShift(updatedShift);

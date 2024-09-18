@@ -8,7 +8,6 @@ import 'package:moment/core/utils.dart';
 import 'package:moment/features/app/injection_container.dart';
 import 'package:moment/features/app/repos/database/database_helper.dart';
 import 'package:moment/features/shift/models/shift/shift_model.dart';
-import 'package:moment/features/shift/models/snapper_start_report/snapper_start_report_model.dart';
 import 'package:sqflite/sqflite.dart';
 
 class SnapperShiftRepo {
@@ -44,14 +43,14 @@ class SnapperShiftRepo {
 
   Future<void> updateShift(SnapperShift shift) async {
     try {
-      final startReport = shift.startReportModel;
+      final shiftStart = shift.shiftStart;
 
-      final updatedStartReport = StartReportModel.forFirestore(startReport);
+      // final updatedStartReport = shiftStart.forFirestore();
 
-      final updatedShift = shift.copyWith(startReportModel: updatedStartReport);
+      // final updatedShift = shift.copyWith(startReportModel: updatedStartReport);
 
       await firestore.collection("shifts").doc(shift.id).set(
-            updatedShift.toJson(),
+            shift.toJson(),
             SetOptions(merge: true),
           );
     } catch (e) {

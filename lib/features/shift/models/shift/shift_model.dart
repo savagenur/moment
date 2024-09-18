@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:moment/features/photo/models/photo/photo_model.dart';
-import 'package:moment/features/shift/models/snapper_start_report/snapper_start_report_model.dart';
+import 'package:moment/features/shift/models/shift_start/shift_start_model.dart';
 
 part 'shift_model.freezed.dart';
 part 'shift_model.g.dart';
@@ -34,7 +34,6 @@ sealed class ShiftModel with _$ShiftModel {
     final String? userFullName,
     final String? userRole,
     required final DateTime? createdAt,
-    final StartReportModel? startReportModel,
   }) = AssistantShift;
   @Implements<BaseShiftModel>()
   const factory ShiftModel.owner({
@@ -58,8 +57,8 @@ sealed class ShiftModel with _$ShiftModel {
     required final DateTime? startTime,
     final DateTime? endTime,
     required final int? status,
-    @Default(SnapperStartReport())
-    final SnapperStartReport? startReportModel,
+    @Default(SnapperShiftStart())
+    final SnapperShiftStart shiftStart,
   }) = SnapperShift;
 
   factory ShiftModel.fromJson(Map<String, dynamic> json) =>

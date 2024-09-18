@@ -15,20 +15,23 @@ class SnapperShiftComparator extends DataSourceComparator<SnapperShift> {
   }
 
   PhotoModel? getLatestPhoto(SnapperShiftPhotoType shiftPhotoType) {
-  PhotoModel? getPhoto(SnapperShift? shift) => switch (shiftPhotoType) {
-    SnapperShiftPhotoType.clothes => shift?.startReportModel?.clothesPhoto,
-    SnapperShiftPhotoType.startWorkPlace => shift?.startReportModel?.startWorkPlacePhoto,
-    SnapperShiftPhotoType.startCamera => shift?.startReportModel?.startCameraPhoto,
-    SnapperShiftPhotoType.startLaptop => shift?.startReportModel?.startLaptopPhoto,
-    SnapperShiftPhotoType.startWires => shift?.startReportModel?.startWiresPhoto,
-    SnapperShiftPhotoType.none => null,
-  };
+    PhotoModel? getPhoto(SnapperShift? shift) => switch (shiftPhotoType) {
+          SnapperShiftPhotoType.clothes => shift?.shiftStart?.clothesPhoto,
+          SnapperShiftPhotoType.startWorkPlace =>
+            shift?.shiftStart?.startWorkPlacePhoto,
+          SnapperShiftPhotoType.startCamera =>
+            shift?.shiftStart?.startCameraPhoto,
+          SnapperShiftPhotoType.startLaptop =>
+            shift?.shiftStart?.startLaptopPhoto,
+          SnapperShiftPhotoType.startWires =>
+            shift?.shiftStart?.startWiresPhoto,
+          SnapperShiftPhotoType.none => null,
+        };
 
-  final shift = getLatestItem(
-    (shift) => getPhoto(shift)?.createdAt ?? DateTime(0),
-  );
+    final shift = getLatestItem(
+      (shift) => getPhoto(shift)?.createdAt ?? DateTime(0),
+    );
 
-  return getPhoto(shift);
-}
-
+    return getPhoto(shift);
+  }
 }

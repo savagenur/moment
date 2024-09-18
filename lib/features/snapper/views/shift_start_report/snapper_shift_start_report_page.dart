@@ -11,8 +11,8 @@ import 'package:moment/core/constants/design_dimensions.dart';
 import 'package:moment/core/extensions/to_double_extension.dart';
 import 'package:moment/features/app/widgets/primary_button.dart';
 import 'package:moment/features/shift/models/shift/shift_model.dart';
-import 'package:moment/features/shift/models/snapper_start_report/snapper_start_report_model.dart';
-import 'package:moment/features/shift/view_models/snapper/snapper_shift_viewmodel.dart';
+import 'package:moment/features/shift/models/start_report/start_report_model.dart';
+import 'package:moment/features/shift/view_models/snapper/bloc/snapper_shift_viewmodel.dart';
 
 @RoutePage()
 class SnapperShiftStartReportPage extends HookConsumerWidget {
@@ -27,8 +27,7 @@ class SnapperShiftStartReportPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final snapperStartReport =
-        snapperShift.startReportModel as SnapperStartReport?;
+    final snapperStartReport = snapperShift.shiftStart?.startReport;
     final framesController = useTextEditingController(
         text: intToTextConverter(snapperStartReport?.startFrames));
     final brokenFramesController = useTextEditingController(
@@ -48,14 +47,16 @@ class SnapperShiftStartReportPage extends HookConsumerWidget {
           _debounce = Timer(const Duration(milliseconds: 300), () {
             ref.read(snapperShiftViewModelProvider.notifier).setLocalShift(
                   snapperShift.copyWith(
-                    startReportModel: SnapperStartReport(
-                      startFrames: textToIntConverter(framesController),
-                      startBrokenFrames:
-                          textToIntConverter(brokenFramesController),
-                      startPaperSets: textToIntConverter(paperSetsController),
-                      startBrokenPaperSets:
-                          textToIntConverter(brokenPaperSetsController),
-                      startPrints: textToIntConverter(startPrintsController),
+                    shiftStart: snapperShift.shiftStart!.copyWith(
+                      startReport: SnapperStartReport(
+                        startFrames: textToIntConverter(framesController),
+                        startBrokenFrames:
+                            textToIntConverter(brokenFramesController),
+                        startPaperSets: textToIntConverter(paperSetsController),
+                        startBrokenPaperSets:
+                            textToIntConverter(brokenPaperSetsController),
+                        startPrints: textToIntConverter(startPrintsController),
+                      ),
                     ),
                   ),
                 );
@@ -98,7 +99,8 @@ class SnapperShiftStartReportPage extends HookConsumerWidget {
                 ),
                 DDimension.bigPadding.horizontalBox,
                 Expanded(
-                  child: buildTextField(context,
+                  child: buildTextField(
+                    context,
                     textInputAction: TextInputAction.next,
                     controller: brokenFramesController,
                     label: "Broken Frames",
@@ -109,7 +111,8 @@ class SnapperShiftStartReportPage extends HookConsumerWidget {
             Row(
               children: [
                 Expanded(
-                  child: buildTextField(context,
+                  child: buildTextField(
+                    context,
                     textInputAction: TextInputAction.next,
                     controller: paperSetsController,
                     label: "Total Paper sets",
@@ -117,7 +120,8 @@ class SnapperShiftStartReportPage extends HookConsumerWidget {
                 ),
                 DDimension.bigPadding.horizontalBox,
                 Expanded(
-                  child: buildTextField(context,
+                  child: buildTextField(
+                    context,
                     textInputAction: TextInputAction.next,
                     controller: brokenPaperSetsController,
                     label: "Broken Paper sets",
@@ -125,7 +129,8 @@ class SnapperShiftStartReportPage extends HookConsumerWidget {
                 ),
               ],
             ),
-            buildTextField(context,
+            buildTextField(
+              context,
               controller: startPrintsController,
               label: "Paper sets in stamp",
             ),
@@ -136,8 +141,7 @@ class SnapperShiftStartReportPage extends HookConsumerWidget {
   }
 
   TextField buildTextField(
-    BuildContext context,
-    {
+    BuildContext context, {
     required TextEditingController controller,
     required String label,
     TextInputAction? textInputAction,

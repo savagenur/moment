@@ -6,7 +6,7 @@ import 'package:moment/features/app/app.dart';
 import 'package:moment/features/app/injection_container.dart';
 import 'package:moment/features/auth/auth_di.dart';
 import 'package:moment/features/shift/models/shift/shift_model.dart';
-import 'package:moment/features/shift/models/snapper_start_report/snapper_start_report_model.dart';
+import 'package:moment/features/shift/models/start_report/start_report_model.dart';
 import 'package:moment/features/shift/repos/snapper_shift_repo.dart';
 import 'package:moment/firebase_options.dart';
 

@@ -4,7 +4,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:moment/features/app/routes/app_router.gr.dart';
 import 'package:moment/features/shift/models/shift/shift_model.dart';
-import 'package:moment/features/shift/view_models/snapper/snapper_shift_viewmodel.dart';
+import 'package:moment/features/shift/view_models/snapper/bloc/snapper_shift_viewmodel.dart';
 
 class SnapperShiftPage extends HookConsumerWidget {
   const SnapperShiftPage({super.key});
@@ -14,7 +14,7 @@ class SnapperShiftPage extends HookConsumerWidget {
     final snapperShiftViewModel =
         ref.read(snapperShiftViewModelProvider.notifier);
     final activeShifts =
-        ref.watch(snapperShiftViewModelProvider).value?.activeShifts;
+        ref.watch(snapperShiftViewModelProvider).activeShifts.value;
     
     return Scaffold(
       appBar: AppBar(
