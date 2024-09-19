@@ -10,7 +10,7 @@ class SnapperShiftComparator extends DataSourceComparator<SnapperShift> {
   });
   SnapperShift? getLatestShift() {
     return getLatestItem(
-      (shift) => shift?.createdAt ?? DateTime(0),
+      (shift) => shift?.updatedAt ?? DateTime(0),
     );
   }
 

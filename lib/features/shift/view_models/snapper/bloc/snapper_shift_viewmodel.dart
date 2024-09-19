@@ -73,7 +73,6 @@ class SnapperShiftViewModel extends _$SnapperShiftViewModel {
   Future<void> getLocalShift() async {
     try {
       final shiftLocal = await _shiftRepo.getLocalShift();
-      log(shiftLocal.toString());
       if (shiftLocal != null) {
         state = state.copyWith(shiftLocal: AsyncValue.data(shiftLocal));
       }
@@ -83,11 +82,12 @@ class SnapperShiftViewModel extends _$SnapperShiftViewModel {
     }
   }
 
-  Future<void> updateShift(SnapperShift shift) async {
+  Future<void> updateRemoteShift(SnapperShift shift) async {
     try {
-      await _shiftRepo.updateShift(shift);
+      await _shiftRepo.updateRemoteShift(shift);
     } catch (e) {
-      print(e);
+      logger.e(e);
+      throw Exception(e);
     }
   }
 
@@ -95,34 +95,34 @@ class SnapperShiftViewModel extends _$SnapperShiftViewModel {
     PhotoModel newPhoto, {
     required SnapperShift shift,
     required bool isVideo,
-    required PhotoType photoType
   }) async {
     try {
       state = state.copyWith(
         shiftLocal: AsyncData(
           shift.copyWith(
             shiftStart: shift.shiftStart.updateShiftStartPhoto(
-              photoType,
+              newPhoto.photoType,
               newPhoto: newPhoto.copyWith(
-                isLoading: false,
-                hasError: true,
+                isLoading: true,
+                hasError: false,
               ),
             )!,
           ),
         ),
       );
-      await _shiftRepo.uploadMedia(
+      final imageUrl = await _shiftRepo.uploadMedia(
         newPhoto.file!,
         isVideo: isVideo,
         shiftId: newPhoto.shiftId!,
-        snapperShiftPhotoType: photoType,
+        snapperShiftPhotoType: newPhoto.photoType,
       );
       state = state.copyWith(
         shiftLocal: AsyncData(
           shift.copyWith(
             shiftStart: shift.shiftStart.updateShiftStartPhoto(
-              photoType,
+              newPhoto.photoType,
               newPhoto: newPhoto.copyWith(
+                imageUrl: imageUrl,
                 isLoading: false,
                 hasError: false,
               ),
@@ -135,7 +135,7 @@ class SnapperShiftViewModel extends _$SnapperShiftViewModel {
         shiftLocal: AsyncData(
           shift.copyWith(
             shiftStart: shift.shiftStart.updateShiftStartPhoto(
-             photoType,
+              newPhoto.photoType,
               newPhoto: newPhoto.copyWith(
                 isLoading: false,
                 hasError: true,
@@ -146,5 +146,6 @@ class SnapperShiftViewModel extends _$SnapperShiftViewModel {
       );
       logger.e(e);
     }
+    _shiftRepo.setLocalShift(state.shiftLocal!.value!);
   }
 }

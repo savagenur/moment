@@ -12,6 +12,7 @@ abstract class BaseShiftStartModel {
   String? get id;
   String? get shiftId;
   DateTime? get createdAt;
+  DateTime? get updatedAt;
 }
 
 @freezed
@@ -23,6 +24,7 @@ class ShiftStartModel with _$ShiftStartModel {
     final String? id,
     final String? shiftId,
     final DateTime? createdAt,
+    final DateTime? updatedAt,
     final PhotoModel? clothesPhoto,
     final PhotoModel? startWorkPlacePhoto,
     final PhotoModel? startCameraPhoto,
@@ -36,6 +38,7 @@ class ShiftStartModel with _$ShiftStartModel {
     final String? id,
     final String? shiftId,
     final DateTime? createdAt,
+    final DateTime? updatedAt,
   }) = AssistantShiftStart;
   factory ShiftStartModel.fromJson(Map<String, dynamic> json) =>
       _$ShiftStartModelFromJson(
@@ -45,17 +48,24 @@ class ShiftStartModel with _$ShiftStartModel {
     if (this is SnapperShiftStart) {
       final shiftStart = this as SnapperShiftStart;
       return shiftStart.copyWith(
-        clothesPhoto: shiftStart.clothesPhoto,
-        startWorkPlacePhoto: shiftStart.startWorkPlacePhoto,
-        startCameraPhoto: shiftStart.startCameraPhoto,
-        startLaptopPhoto: shiftStart.startLaptopPhoto,
-        startWiresPhoto: shiftStart.startWiresPhoto,
+        clothesPhoto: _setPhotoArgToNull(shiftStart.clothesPhoto),
+        startWorkPlacePhoto: _setPhotoArgToNull(shiftStart.startWorkPlacePhoto),
+        startCameraPhoto: _setPhotoArgToNull(shiftStart.startCameraPhoto),
+        startLaptopPhoto: _setPhotoArgToNull(shiftStart.startLaptopPhoto),
+        startWiresPhoto: _setPhotoArgToNull(shiftStart.startWiresPhoto),
       ) as T;
     } else {
       throw ArgumentError('Unsupported type: $runtimeType');
     }
   }
 
+  PhotoModel? _setPhotoArgToNull(PhotoModel? photo) {
+    return photo?.copyWith(
+      file: null,
+      isLoading: false,
+      hasError: false,
+    );
+  }
   // Map<String, dynamic> toSqlJson() {
   //   final data = toJson();
   //   if (this is SnapperShiftStart) {

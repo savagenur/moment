@@ -10,6 +10,7 @@ abstract class BaseStartReportModel {
   String? get shiftId;
   DateTime? get date;
   DateTime? get createdAt;
+  DateTime? get updatedAt;
 }
 
 @freezed
@@ -20,6 +21,7 @@ class StartReportModel with _$StartReportModel {
     final String? shiftId,
     final DateTime? date,
     final DateTime? createdAt,
+    final DateTime? updatedAt,
     final int? startFrames,
     final int? startBrokenFrames,
     final int? startPaperSets,
@@ -33,6 +35,7 @@ class StartReportModel with _$StartReportModel {
     final String? shiftId,
     final DateTime? date,
     final DateTime? createdAt,
+    final DateTime? updatedAt,
   }) = AssistantStartReport;
   factory StartReportModel.fromJson(Map<String, dynamic> json) =>
       _$StartReportModelFromJson(

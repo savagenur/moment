@@ -8,9 +8,9 @@ class DataSourceComparator<T> {
     this.remote,
   });
   bool get hasBoth => local != null && remote != null;
-  T? getLatestItem(DateTime Function(T?) createdAt) {
+  T? getLatestItem(DateTime Function(T?) updatedAt) {
     if (hasBoth) {
-      return createdAt(local).isAfter(createdAt(remote)) ? local : remote;
+      return updatedAt(local).isAfter(updatedAt(remote)) ? local : remote;
     }
     return local ?? remote;
   }

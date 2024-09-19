@@ -39,7 +39,7 @@ class SnapperShiftStartPage extends HookConsumerWidget {
     final shiftViewModel = ref.watch(snapperShiftViewModelProvider);
     final shiftViewModelNotifier =
         ref.read(snapperShiftViewModelProvider.notifier);
-    final snapperShiftLocal = shiftViewModel.shiftLocal?.value as SnapperShift?;
+    final snapperShiftLocal = shiftViewModel.shiftLocal?.value;
     final snapperShiftRemote = shiftRemote as SnapperShift;
     final shiftComparator = SnapperShiftComparator(
       local: snapperShiftLocal,
@@ -159,33 +159,57 @@ class SnapperShiftStartPage extends HookConsumerWidget {
         child: PrimaryButton(
           title: Text("Submit"),
           margin: DDimension.bigPadding.all,
-          onTap: () {
+          onTap: () async {
             if (_isSubmitValid(shiftLatest!)) {
-              // shiftViewModelNotifier.updateShift(
-              //   shiftLatest.copyWith(
-              //     status: 0,
-              //   ),
-              // );
-              Fluttertoast.showToast(msg: "Successfully saved");
+              await _handleSubmit(shiftViewModelNotifier, shiftLatest);
             } else {
-              if (!_isStartReportCompleted(shiftLatest.shiftStart)) {
-                Fluttertoast.showToast(
-                  msg: "Please complete 'Shift start report'",
-                  backgroundColor: Colors.red,
-                  textColor: Colors.white,
-                );
-              } else {
-                Fluttertoast.showToast(
-                  msg: "Please take all photos",
-                  backgroundColor: Colors.red,
-                  textColor: Colors.white,
-                );
-              }
+              _handleInvalidSubmit(shiftLatest);
             }
           },
         ),
       ),
     );
+  }
+
+// Function to handle successful submission
+  Future<void> _handleSubmit(
+      SnapperShiftViewModel shiftViewModelNotifier, SnapperShift shift) async {
+    try {
+      await shiftViewModelNotifier.updateRemoteShift(
+        shift.copyWith(
+          status: 0,
+        ),
+      );
+      Fluttertoast.showToast(
+        msg: "Successfully saved",
+        backgroundColor: Colors.green,
+        textColor: Colors.white,
+      );
+    } catch (e) {
+      // Improved error message display
+      Fluttertoast.showToast(
+        msg: "Error occurred while saving: $e",
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+      );
+    }
+  }
+
+// Function to handle invalid submission
+  void _handleInvalidSubmit(SnapperShift shift) {
+    if (!_isStartReportCompleted(shift.shiftStart)) {
+      Fluttertoast.showToast(
+        msg: "Please complete 'Shift start report'",
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+      );
+    } else {
+      Fluttertoast.showToast(
+        msg: "Please take all photos",
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+      );
+    }
   }
 
   bool _isStartReportCompleted(SnapperShiftStart? shiftStart) =>
@@ -215,24 +239,23 @@ class SnapperShiftStartPage extends HookConsumerWidget {
       PhotoModel? newPhoto = getPhotoModel(shiftLatest, file, photoType);
 
       final newShift = shiftLatest?.copyWith(
+        updatedAt: DateTime.now(),
         shiftStart: shiftLatest.shiftStart
             .updateShiftStartPhoto(
               photoType,
               newPhoto: newPhoto,
             )!
             .copyWith(
-              createdAt: DateTime.now(),
+              updatedAt: DateTime.now(),
             ),
       );
-if (newShift != null) {
-        shiftViewModelNotifier.setLocalShift(newShift);
+      if (newShift != null) {
+        shiftViewModelNotifier.uploadMedia(
+          newPhoto,
+          shift: newShift,
+          isVideo: false,
+        );
       }
-
-      // shiftViewModelNotifier.uploadMedia(
-      //   newPhoto,
-      //   shift: newShift,
-      //   isVideo: false,
-      // );
     }
   }
 
@@ -243,7 +266,7 @@ if (newShift != null) {
   ) {
     return PhotoModel(
       id: const Uuid().v1(),
-      // photoType: photoType,
+      photoType: photoType,
       file: photoFile,
       createdAt: DateTime.now(),
       restaurantName: shiftLatest?.restaurantName,

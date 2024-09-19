@@ -13,7 +13,7 @@ class PhotoModel with _$PhotoModel {
   const factory PhotoModel({
     required final String? id,
     required final String? shiftId,
-    // required final PhotoType photoType,
+    required final PhotoType photoType,
     final String? userId,
     final String? userName,
     final String? restaurantName,

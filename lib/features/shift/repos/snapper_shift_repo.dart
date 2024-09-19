@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -41,16 +42,16 @@ class SnapperShiftRepo {
     }
   }
 
-  Future<void> updateShift(SnapperShift shift) async {
+  Future<void> updateRemoteShift(SnapperShift shift) async {
     try {
-      final updatedShift = shift.forFirestore();
-
+      final updatedShift = shift.forFirestore<SnapperShift>();
       await firestore.collection("shifts").doc(shift.id).set(
             updatedShift.toJson(),
             SetOptions(merge: true),
           );
     } catch (e) {
       logger.e(e.toString());
+      throw Exception(e);
     }
   }
 
@@ -69,7 +70,7 @@ class SnapperShiftRepo {
         (snapshot) {
           double progress =
               (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          print("Upload is $progress complete");
+          log("Upload is $progress complete");
         },
       );
       await uploadTask.whenComplete(
@@ -79,17 +80,17 @@ class SnapperShiftRepo {
       return downloadUrl;
     } catch (e) {
       logger.e("Error uploading media: $e");
-      return null;
+      throw Exception(e);
     }
   }
 
-  Future<void> setLocalShift(SnapperShift shift) async {
+  Future<void> setLocalShift(SnapperShift? shift) async {
     final db = await sl<DatabaseHelper>().database;
     await db.insert(
       'shift',
       {
         'id': 1,
-        'shift_data': jsonEncode(shift.toJson()),
+        'shift_data': jsonEncode(shift?.toJson()),
         'runtimeType': "snapper"
       },
       conflictAlgorithm: ConflictAlgorithm.replace,
@@ -100,9 +101,15 @@ class SnapperShiftRepo {
     final db = await sl<DatabaseHelper>().database;
     // await db.delete("shift");
     List<Map<String, dynamic>> maps = await db.query('shift');
-    print(maps.length);
     if (maps.isNotEmpty) {
-      return SnapperShift.fromJson(jsonDecode(maps.first['shift_data']));
+      try {
+        final shiftMap = maps.first['shift_data'];
+        return shiftMap != "null"
+            ? SnapperShift.fromJson(jsonDecode(shiftMap))
+            : null;
+      } catch (e) {
+        throw Exception("Get local shift method: $e");
+      }
     }
     return null;
   }

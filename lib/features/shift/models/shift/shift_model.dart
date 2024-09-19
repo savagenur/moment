@@ -12,6 +12,7 @@ abstract class BaseShiftModel {
   String? get userFullName;
   String? get userRole;
   DateTime? get createdAt;
+  DateTime? get updatedAt;
 }
 
 @freezed
@@ -25,6 +26,7 @@ sealed class ShiftModel with _$ShiftModel {
     final String? userFullName,
     final String? userRole,
     required final DateTime? createdAt,
+     final DateTime? updatedAt,
   }) = ManagerShift;
 
   @Implements<BaseShiftModel>()
@@ -35,6 +37,7 @@ sealed class ShiftModel with _$ShiftModel {
     final String? userFullName,
     final String? userRole,
     required final DateTime? createdAt,
+     final DateTime? updatedAt,
   }) = AssistantShift;
   @Implements<BaseShiftModel>()
   const factory ShiftModel.owner({
@@ -44,6 +47,7 @@ sealed class ShiftModel with _$ShiftModel {
     final String? userFullName,
     final String? userRole,
     required final DateTime? createdAt,
+     final DateTime? updatedAt,
   }) = OwnerShift;
   @Implements<BaseShiftModel>()
   const factory ShiftModel.snapper({
@@ -53,6 +57,7 @@ sealed class ShiftModel with _$ShiftModel {
     final String? userFullName,
     final String? userRole,
     required final DateTime? createdAt,
+     final DateTime? updatedAt,
     final List<String>? assistants,
     required final String? restaurantName,
     required final DateTime? startTime,
@@ -65,9 +70,9 @@ sealed class ShiftModel with _$ShiftModel {
       _$ShiftModelFromJson(
         json,
       );
-  T forFirestore<T>() {
-    if (T is SnapperShift) {
-      final shift = T as SnapperShift;
+  T forFirestore<T extends ShiftModel>() {
+    if (this is SnapperShift ) {
+      final shift = this as SnapperShift;
       return shift.copyWith(
         shiftStart: shift.shiftStart.forFirestore(),
       ) as T;

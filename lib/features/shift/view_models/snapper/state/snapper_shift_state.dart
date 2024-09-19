@@ -9,6 +9,6 @@ class SnapperShiftState with _$SnapperShiftState {
   const factory SnapperShiftState({
     @Default(AsyncLoading()) final AsyncValue<List<SnapperShift>> activeShifts,
     @Default(AsyncLoading()) final AsyncValue<List<SnapperShift>> inactiveShifts,
-    final AsyncValue<ShiftModel?>? shiftLocal,
+    final AsyncValue<SnapperShift?>? shiftLocal,
   }) = _SnapperShiftState;
 }
