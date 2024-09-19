@@ -16,6 +16,7 @@ abstract class BaseShiftModel {
 
 @freezed
 sealed class ShiftModel with _$ShiftModel {
+  const ShiftModel._();
   @Implements<BaseShiftModel>()
   const factory ShiftModel.manager({
     final String? id,
@@ -57,13 +58,21 @@ sealed class ShiftModel with _$ShiftModel {
     required final DateTime? startTime,
     final DateTime? endTime,
     required final int? status,
-    @Default(SnapperShiftStart())
-    final SnapperShiftStart shiftStart,
+    @Default(SnapperShiftStart()) final SnapperShiftStart shiftStart,
   }) = SnapperShift;
 
   factory ShiftModel.fromJson(Map<String, dynamic> json) =>
       _$ShiftModelFromJson(
         json,
       );
-
+  T forFirestore<T>() {
+    if (T is SnapperShift) {
+      final shift = T as SnapperShift;
+      return shift.copyWith(
+        shiftStart: shift.shiftStart.forFirestore(),
+      ) as T;
+    } else {
+      throw ArgumentError("Unexpected type $runtimeType");
+    }
+  }
 }

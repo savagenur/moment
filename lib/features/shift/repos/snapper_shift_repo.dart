@@ -43,14 +43,10 @@ class SnapperShiftRepo {
 
   Future<void> updateShift(SnapperShift shift) async {
     try {
-      final shiftStart = shift.shiftStart;
-
-      final updatedShiftStart = shiftStart.forFirestore();
-
-      final updatedShift = shift.copyWith(shiftStart: updatedShiftStart);
+      final updatedShift = shift.forFirestore();
 
       await firestore.collection("shifts").doc(shift.id).set(
-            shift.toJson(),
+            updatedShift.toJson(),
             SetOptions(merge: true),
           );
     } catch (e) {
