@@ -176,9 +176,7 @@ class SnapperShiftStartPage extends HookConsumerWidget {
       SnapperShiftViewModel shiftViewModelNotifier, SnapperShift shift) async {
     try {
       await shiftViewModelNotifier.updateRemoteShift(
-        shift.copyWith(
-          status: 0,
-        ),
+        shift,
       );
       Fluttertoast.showToast(
         msg: "Successfully saved",
