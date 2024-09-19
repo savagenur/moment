@@ -12,7 +12,7 @@ class SnapperShiftDetailItem extends StatelessWidget {
   final String title;
   final DateTime? date;
   final SnapperShift? shift;
-  final SnapperShiftPhotoType shiftPhotoType;
+  final PhotoType shiftPhotoType;
   final VoidCallback? onTap;
   final Widget? trailing;
 
@@ -24,7 +24,7 @@ class SnapperShiftDetailItem extends StatelessWidget {
     this.onTap,
     this.trailing,
     this.shift,
-    this.shiftPhotoType = SnapperShiftPhotoType.none,
+    this.shiftPhotoType = PhotoType.none,
   });
 
   @override

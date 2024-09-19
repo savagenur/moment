@@ -1,7 +1,7 @@
 import 'package:moment/features/photo/models/photo/photo_model.dart';
 import 'package:moment/features/shift/models/shift/shift_model.dart';
 
-enum SnapperShiftPhotoType {
+enum PhotoType {
   clothes("clothes"),
   startWorkPlace("startWorkPlace"),
   startCamera("startCamera"),
@@ -11,6 +11,5 @@ enum SnapperShiftPhotoType {
 
   final String text;
 
-  const SnapperShiftPhotoType(this.text);
- 
+  const PhotoType(this.text);
 }

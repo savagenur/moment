@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:moment/core/converters/file_json_converter.dart';
+import 'package:moment/core/enums/snapper_shift_photo_type.dart';
 
 part 'photo_model.g.dart';
 part 'photo_model.freezed.dart';
@@ -12,10 +13,10 @@ class PhotoModel with _$PhotoModel {
   const factory PhotoModel({
     required final String? id,
     required final String? shiftId,
+    // required final PhotoType photoType,
     final String? userId,
     final String? userName,
     final String? restaurantName,
-    final bool? isStartShift,
     required final DateTime? createdAt,
     @FileJsonConverter() final File? file,
     final String? imageUrl,

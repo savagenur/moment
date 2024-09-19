@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:moment/core/enums/snapper_shift_photo_type.dart';
@@ -72,6 +73,7 @@ class SnapperShiftViewModel extends _$SnapperShiftViewModel {
   Future<void> getLocalShift() async {
     try {
       final shiftLocal = await _shiftRepo.getLocalShift();
+      log(shiftLocal.toString());
       if (shiftLocal != null) {
         state = state.copyWith(shiftLocal: AsyncValue.data(shiftLocal));
       }
@@ -90,31 +92,58 @@ class SnapperShiftViewModel extends _$SnapperShiftViewModel {
   }
 
   Future<void> uploadMedia(
-    File file, {
+    PhotoModel newPhoto, {
     required SnapperShift shift,
-    required PhotoModel photo,
     required bool isVideo,
-    required String shiftId,
-    required SnapperShiftPhotoType snapperShiftPhotoType,
+    required PhotoType photoType
   }) async {
     try {
-      final imageUrl = await _shiftRepo.uploadMedia(
-        file,
+      state = state.copyWith(
+        shiftLocal: AsyncData(
+          shift.copyWith(
+            shiftStart: shift.shiftStart.updateShiftStartPhoto(
+              photoType,
+              newPhoto: newPhoto.copyWith(
+                isLoading: false,
+                hasError: true,
+              ),
+            )!,
+          ),
+        ),
+      );
+      await _shiftRepo.uploadMedia(
+        newPhoto.file!,
         isVideo: isVideo,
-        shiftId: shiftId,
-        snapperShiftPhotoType: snapperShiftPhotoType,
+        shiftId: newPhoto.shiftId!,
+        snapperShiftPhotoType: photoType,
       );
       state = state.copyWith(
         shiftLocal: AsyncData(
           shift.copyWith(
             shiftStart: shift.shiftStart.updateShiftStartPhoto(
-              snapperShiftPhotoType,
-              newPhoto: photo,
+              photoType,
+              newPhoto: newPhoto.copyWith(
+                isLoading: false,
+                hasError: false,
+              ),
             )!,
           ),
         ),
       );
     } catch (e) {
+      state = state.copyWith(
+        shiftLocal: AsyncData(
+          shift.copyWith(
+            shiftStart: shift.shiftStart.updateShiftStartPhoto(
+             photoType,
+              newPhoto: newPhoto.copyWith(
+                isLoading: false,
+                hasError: true,
+              ),
+            )!,
+          ),
+        ),
+      );
       logger.e(e);
     }
   }

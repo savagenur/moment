@@ -74,41 +74,39 @@ class ShiftStartModel with _$ShiftStartModel {
   // }
 
   PhotoModel? getPhoto(
-    SnapperShiftPhotoType photoType,
+    PhotoType photoType,
   ) {
     if (this is SnapperShiftStart) {
       final snapperShiftStart = this as SnapperShiftStart;
       return switch (photoType) {
-        SnapperShiftPhotoType.clothes => snapperShiftStart.clothesPhoto,
-        SnapperShiftPhotoType.startWorkPlace =>
-          snapperShiftStart.startWorkPlacePhoto,
-        SnapperShiftPhotoType.startCamera => snapperShiftStart.startCameraPhoto,
-        SnapperShiftPhotoType.startLaptop => snapperShiftStart.startLaptopPhoto,
-        SnapperShiftPhotoType.startWires => snapperShiftStart.startWiresPhoto,
-        SnapperShiftPhotoType.none => null,
+        PhotoType.clothes => snapperShiftStart.clothesPhoto,
+        PhotoType.startWorkPlace => snapperShiftStart.startWorkPlacePhoto,
+        PhotoType.startCamera => snapperShiftStart.startCameraPhoto,
+        PhotoType.startLaptop => snapperShiftStart.startLaptopPhoto,
+        PhotoType.startWires => snapperShiftStart.startWiresPhoto,
+        PhotoType.none => null,
       };
     }
     throw ArgumentError('Unsupported type: $runtimeType');
   }
 
   SnapperShiftStart? updateShiftStartPhoto(
-    SnapperShiftPhotoType photoType, {
+    PhotoType photoType, {
     required PhotoModel newPhoto,
   }) {
     if (this is SnapperShiftStart) {
       final snapperShiftStart = this as SnapperShiftStart;
       return switch (photoType) {
-        SnapperShiftPhotoType.clothes =>
-          snapperShiftStart.copyWith(clothesPhoto: newPhoto),
-        SnapperShiftPhotoType.startWorkPlace =>
+        PhotoType.clothes => snapperShiftStart.copyWith(clothesPhoto: newPhoto),
+        PhotoType.startWorkPlace =>
           snapperShiftStart.copyWith(startWorkPlacePhoto: newPhoto),
-        SnapperShiftPhotoType.startCamera =>
+        PhotoType.startCamera =>
           snapperShiftStart.copyWith(startCameraPhoto: newPhoto),
-        SnapperShiftPhotoType.startLaptop =>
+        PhotoType.startLaptop =>
           snapperShiftStart.copyWith(startLaptopPhoto: newPhoto),
-        SnapperShiftPhotoType.startWires =>
+        PhotoType.startWires =>
           snapperShiftStart.copyWith(startWiresPhoto: newPhoto),
-        SnapperShiftPhotoType.none => null,
+        PhotoType.none => null,
       };
     }
     throw ArgumentError('Unsupported type: $runtimeType');

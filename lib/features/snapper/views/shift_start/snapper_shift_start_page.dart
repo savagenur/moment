@@ -71,7 +71,7 @@ class SnapperShiftStartPage extends HookConsumerWidget {
         child: Column(
           children: [
             SnapperShiftDetailItem(
-              shiftPhotoType: SnapperShiftPhotoType.clothes,
+              shiftPhotoType: PhotoType.clothes,
               index: "1",
               title: "Clothes Photo",
               shift: shiftLatest,
@@ -79,12 +79,12 @@ class SnapperShiftStartPage extends HookConsumerWidget {
                   onPressed: () => _addPhoto(
                         shiftViewModelNotifier,
                         shiftComparator,
-                        photoType: SnapperShiftPhotoType.clothes,
+                        photoType: PhotoType.clothes,
                       ),
                   icon: Icon(Icons.camera_alt_outlined)),
             ),
             SnapperShiftDetailItem(
-              shiftPhotoType: SnapperShiftPhotoType.startWorkPlace,
+              shiftPhotoType: PhotoType.startWorkPlace,
               index: "2",
               shift: shiftLatest,
               title: "Workplace Photo",
@@ -92,12 +92,12 @@ class SnapperShiftStartPage extends HookConsumerWidget {
                   onPressed: () => _addPhoto(
                         shiftViewModelNotifier,
                         shiftComparator,
-                        photoType: SnapperShiftPhotoType.startWorkPlace,
+                        photoType: PhotoType.startWorkPlace,
                       ),
                   icon: Icon(Icons.camera_alt_outlined)),
             ),
             SnapperShiftDetailItem(
-              shiftPhotoType: SnapperShiftPhotoType.startCamera,
+              shiftPhotoType: PhotoType.startCamera,
               index: "3",
               shift: shiftLatest,
               title: "Camera Photo",
@@ -105,12 +105,12 @@ class SnapperShiftStartPage extends HookConsumerWidget {
                   onPressed: () => _addPhoto(
                         shiftViewModelNotifier,
                         shiftComparator,
-                        photoType: SnapperShiftPhotoType.startCamera,
+                        photoType: PhotoType.startCamera,
                       ),
                   icon: Icon(Icons.camera_alt_outlined)),
             ),
             SnapperShiftDetailItem(
-              shiftPhotoType: SnapperShiftPhotoType.startLaptop,
+              shiftPhotoType: PhotoType.startLaptop,
               index: "4",
               shift: shiftLatest,
               title: "Laptop Photo",
@@ -118,12 +118,12 @@ class SnapperShiftStartPage extends HookConsumerWidget {
                   onPressed: () => _addPhoto(
                         shiftViewModelNotifier,
                         shiftComparator,
-                        photoType: SnapperShiftPhotoType.startLaptop,
+                        photoType: PhotoType.startLaptop,
                       ),
                   icon: Icon(Icons.camera_alt_outlined)),
             ),
             SnapperShiftDetailItem(
-              shiftPhotoType: SnapperShiftPhotoType.startWires,
+              shiftPhotoType: PhotoType.startWires,
               index: "5",
               shift: shiftLatest,
               title: "Wires Photo",
@@ -131,20 +131,19 @@ class SnapperShiftStartPage extends HookConsumerWidget {
                   onPressed: () => _addPhoto(
                         shiftViewModelNotifier,
                         shiftComparator,
-                        photoType: SnapperShiftPhotoType.startWires,
+                        photoType: PhotoType.startWires,
                       ),
                   icon: Icon(Icons.camera_alt_outlined)),
             ),
             Divider(),
             SnapperShiftDetailItem(
-              shiftPhotoType: SnapperShiftPhotoType.none,
+              shiftPhotoType: PhotoType.none,
               index: "6",
               title: "Shift start report",
               onTap: () => context.pushRoute(SnapperShiftStartReportRoute(
                 snapperShift: shiftLatest!,
               )),
-              trailing: _isStartReportCompleted(
-                      (shiftLatest?.shiftStart))
+              trailing: _isStartReportCompleted((shiftLatest?.shiftStart))
                   ? Icon(
                       Icons.checklist_rtl,
                       color: Colors.green,
@@ -169,8 +168,7 @@ class SnapperShiftStartPage extends HookConsumerWidget {
               // );
               Fluttertoast.showToast(msg: "Successfully saved");
             } else {
-              if (!_isStartReportCompleted(
-                  shiftLatest.shiftStart)) {
+              if (!_isStartReportCompleted(shiftLatest.shiftStart)) {
                 Fluttertoast.showToast(
                   msg: "Please complete 'Shift start report'",
                   backgroundColor: Colors.red,
@@ -208,35 +206,44 @@ class SnapperShiftStartPage extends HookConsumerWidget {
   void _addPhoto(
     SnapperShiftViewModel shiftViewModelNotifier,
     SnapperShiftComparator shiftComparator, {
-    required SnapperShiftPhotoType photoType,
+    required PhotoType photoType,
   }) async {
-    final photoFile = await PhotoRepo.takePhoto(ImageSource.camera);
-    if (photoFile != null) {
+    final file = await PhotoRepo.takePhoto(ImageSource.camera);
+    if (file != null) {
       final shiftLatest = shiftComparator.getLatestShift();
 
-      PhotoModel? newPhoto = getPhotoModel(shiftLatest, photoFile);
+      PhotoModel? newPhoto = getPhotoModel(shiftLatest, file, photoType);
 
-      final updatedShift = shiftLatest?.copyWith(
+      final newShift = shiftLatest?.copyWith(
         shiftStart: shiftLatest.shiftStart
             .updateShiftStartPhoto(
               photoType,
-              newPhoto: newPhoto!,
+              newPhoto: newPhoto,
             )!
-            .copyWith(createdAt: DateTime.now()),
+            .copyWith(
+              createdAt: DateTime.now(),
+            ),
       );
-
-      if (updatedShift != null) {
-        shiftViewModelNotifier.setLocalShift(updatedShift);
+if (newShift != null) {
+        shiftViewModelNotifier.setLocalShift(newShift);
       }
+
+      // shiftViewModelNotifier.uploadMedia(
+      //   newPhoto,
+      //   shift: newShift,
+      //   isVideo: false,
+      // );
     }
   }
 
-  PhotoModel? getPhotoModel(
+  PhotoModel getPhotoModel(
     SnapperShift? shiftLatest,
     File? photoFile,
+    PhotoType photoType,
   ) {
     return PhotoModel(
       id: const Uuid().v1(),
+      // photoType: photoType,
       file: photoFile,
       createdAt: DateTime.now(),
       restaurantName: shiftLatest?.restaurantName,

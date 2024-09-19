@@ -58,7 +58,7 @@ class SnapperShiftRepo {
     File file, {
     required bool isVideo,
     required String shiftId,
-    required SnapperShiftPhotoType snapperShiftPhotoType,
+    required PhotoType snapperShiftPhotoType,
   }) async {
     try {
       String filePath =
