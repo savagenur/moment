@@ -45,9 +45,9 @@ class SnapperShiftRepo {
     try {
       final shiftStart = shift.shiftStart;
 
-      // final updatedStartReport = shiftStart.forFirestore();
+      final updatedShiftStart = shiftStart.forFirestore();
 
-      // final updatedShift = shift.copyWith(startReportModel: updatedStartReport);
+      final updatedShift = shift.copyWith(shiftStart: updatedShiftStart);
 
       await firestore.collection("shifts").doc(shift.id).set(
             shift.toJson(),

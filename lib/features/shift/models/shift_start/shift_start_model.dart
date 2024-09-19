@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:moment/core/enums/snapper_shift_photo_type.dart';
 import 'package:moment/features/photo/models/photo/photo_model.dart';
+import 'package:moment/features/shift/models/shift/shift_model.dart';
 import 'package:moment/features/shift/models/start_report/start_report_model.dart';
 
 part 'shift_start_model.freezed.dart';
@@ -40,22 +41,37 @@ class ShiftStartModel with _$ShiftStartModel {
       _$ShiftStartModelFromJson(
         json,
       );
-  Map<String, dynamic> toSqlJson() {
-    final data = toJson();
+  T forFirestore<T>() {
     if (this is SnapperShiftStart) {
       final shiftStart = this as SnapperShiftStart;
-      data.addEntries([
-        MapEntry("clothesPhoto", shiftStart.clothesPhoto),
-        MapEntry("startWorkPlacePhoto", shiftStart.startWorkPlacePhoto),
-        MapEntry("startCameraPhoto", shiftStart.startCameraPhoto),
-        MapEntry("startLaptopPhoto", shiftStart.startLaptopPhoto),
-        MapEntry("startWiresPhoto", shiftStart.startWiresPhoto),
-      ]);
-      return data;
+      return shiftStart.copyWith(
+        clothesPhoto: shiftStart.clothesPhoto,
+        startWorkPlacePhoto: shiftStart.startWorkPlacePhoto,
+        startCameraPhoto: shiftStart.startCameraPhoto,
+        startLaptopPhoto: shiftStart.startLaptopPhoto,
+        startWiresPhoto: shiftStart.startWiresPhoto,
+      ) as T;
     } else {
       throw ArgumentError('Unsupported type: $runtimeType');
     }
   }
+
+  // Map<String, dynamic> toSqlJson() {
+  //   final data = toJson();
+  //   if (this is SnapperShiftStart) {
+  //     final shiftStart = this as SnapperShiftStart;
+  //     data.addEntries([
+  //       MapEntry("clothesPhoto", shiftStart.clothesPhoto),
+  //       MapEntry("startWorkPlacePhoto", shiftStart.startWorkPlacePhoto),
+  //       MapEntry("startCameraPhoto", shiftStart.startCameraPhoto),
+  //       MapEntry("startLaptopPhoto", shiftStart.startLaptopPhoto),
+  //       MapEntry("startWiresPhoto", shiftStart.startWiresPhoto),
+  //     ]);
+  //     return data;
+  //   } else {
+  //     throw ArgumentError('Unsupported type: $runtimeType');
+  //   }
+  // }
 
   PhotoModel? getPhoto(
     SnapperShiftPhotoType photoType,

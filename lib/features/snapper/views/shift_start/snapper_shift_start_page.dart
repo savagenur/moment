@@ -198,11 +198,11 @@ class SnapperShiftStartPage extends HookConsumerWidget {
       shiftStart?.startReport.startPrints != null;
   bool _isSubmitValid(SnapperShift shift) {
     return _isStartReportCompleted(shift.shiftStart) &&
-        shift.shiftStart?.clothesPhoto != null &&
-        shift.shiftStart?.startWorkPlacePhoto != null &&
-        shift.shiftStart?.startCameraPhoto != null &&
-        shift.shiftStart?.startLaptopPhoto != null &&
-        shift.shiftStart?.startWiresPhoto != null;
+        shift.shiftStart.clothesPhoto != null &&
+        shift.shiftStart.startWorkPlacePhoto != null &&
+        shift.shiftStart.startCameraPhoto != null &&
+        shift.shiftStart.startLaptopPhoto != null &&
+        shift.shiftStart.startWiresPhoto != null;
   }
 
   void _addPhoto(
@@ -216,8 +216,8 @@ class SnapperShiftStartPage extends HookConsumerWidget {
 
       PhotoModel? newPhoto = getPhotoModel(shiftLatest, photoFile);
 
-      final updatedShift = shiftLatest!.copyWith(
-        shiftStart: shiftLatest.shiftStart!
+      final updatedShift = shiftLatest?.copyWith(
+        shiftStart: shiftLatest.shiftStart
             .updateShiftStartPhoto(
               photoType,
               newPhoto: newPhoto!,

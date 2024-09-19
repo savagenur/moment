@@ -8,6 +8,7 @@ part 'photo_model.freezed.dart';
 
 @freezed
 class PhotoModel with _$PhotoModel {
+  const PhotoModel._();
   const factory PhotoModel({
     required final String? id,
     required final String? shiftId,
@@ -23,8 +24,8 @@ class PhotoModel with _$PhotoModel {
   }) = _PhotoModel;
   factory PhotoModel.fromJson(Map<String, dynamic> json) =>
       _$PhotoModelFromJson(json);
-  static PhotoModel? forFirestore(PhotoModel? photo) {
-    return photo?.copyWith(
+  PhotoModel? forFirestore() {
+    return copyWith(
       file: null,
       isLoading: null,
       hasError: null,
