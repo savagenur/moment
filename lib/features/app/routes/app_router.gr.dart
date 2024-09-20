@@ -8,25 +8,23 @@
 // coverage:ignore-file
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:auto_route/auto_route.dart' as _i7;
-import 'package:flutter/material.dart' as _i8;
+import 'package:auto_route/auto_route.dart' as _i6;
+import 'package:flutter/material.dart' as _i7;
 import 'package:moment/features/auth/views/sign_in/sign_in_page.dart' as _i1;
-import 'package:moment/features/shift/models/shift/shift_model.dart' as _i9;
+import 'package:moment/features/shift/models/shift/shift_model.dart' as _i8;
 import 'package:moment/features/snapper/views/navigation/snapper_navigation/snapper_navigation_page.dart'
     as _i2;
 import 'package:moment/features/snapper/views/shift_end/snapper_shift_end_page.dart'
     as _i3;
-import 'package:moment/features/snapper/views/shift_process/shift_process_page.dart'
-    as _i4;
 import 'package:moment/features/snapper/views/shift_start/snapper_shift_start_page.dart'
-    as _i5;
+    as _i4;
 import 'package:moment/features/snapper/views/shift_start_report/snapper_shift_start_report_page.dart'
-    as _i6;
+    as _i5;
 
 /// generated route for
 /// [_i1.SignInPage]
-class SignInRoute extends _i7.PageRouteInfo<void> {
-  const SignInRoute({List<_i7.PageRouteInfo>? children})
+class SignInRoute extends _i6.PageRouteInfo<void> {
+  const SignInRoute({List<_i6.PageRouteInfo>? children})
       : super(
           SignInRoute.name,
           initialChildren: children,
@@ -34,7 +32,7 @@ class SignInRoute extends _i7.PageRouteInfo<void> {
 
   static const String name = 'SignInRoute';
 
-  static _i7.PageInfo page = _i7.PageInfo(
+  static _i6.PageInfo page = _i6.PageInfo(
     name,
     builder: (data) {
       return const _i1.SignInPage();
@@ -44,8 +42,8 @@ class SignInRoute extends _i7.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i2.SnapperNavigationPage]
-class SnapperNavigationRoute extends _i7.PageRouteInfo<void> {
-  const SnapperNavigationRoute({List<_i7.PageRouteInfo>? children})
+class SnapperNavigationRoute extends _i6.PageRouteInfo<void> {
+  const SnapperNavigationRoute({List<_i6.PageRouteInfo>? children})
       : super(
           SnapperNavigationRoute.name,
           initialChildren: children,
@@ -53,7 +51,7 @@ class SnapperNavigationRoute extends _i7.PageRouteInfo<void> {
 
   static const String name = 'SnapperNavigationRoute';
 
-  static _i7.PageInfo page = _i7.PageInfo(
+  static _i6.PageInfo page = _i6.PageInfo(
     name,
     builder: (data) {
       return const _i2.SnapperNavigationPage();
@@ -63,50 +61,58 @@ class SnapperNavigationRoute extends _i7.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i3.SnapperShiftEndPage]
-class SnapperShiftEndRoute extends _i7.PageRouteInfo<void> {
-  const SnapperShiftEndRoute({List<_i7.PageRouteInfo>? children})
-      : super(
+class SnapperShiftEndRoute extends _i6.PageRouteInfo<SnapperShiftEndRouteArgs> {
+  SnapperShiftEndRoute({
+    _i7.Key? key,
+    required _i8.ShiftModel shiftRemote,
+    List<_i6.PageRouteInfo>? children,
+  }) : super(
           SnapperShiftEndRoute.name,
+          args: SnapperShiftEndRouteArgs(
+            key: key,
+            shiftRemote: shiftRemote,
+          ),
           initialChildren: children,
         );
 
   static const String name = 'SnapperShiftEndRoute';
 
-  static _i7.PageInfo page = _i7.PageInfo(
+  static _i6.PageInfo page = _i6.PageInfo(
     name,
     builder: (data) {
-      return const _i3.SnapperShiftEndPage();
+      final args = data.argsAs<SnapperShiftEndRouteArgs>();
+      return _i3.SnapperShiftEndPage(
+        key: args.key,
+        shiftRemote: args.shiftRemote,
+      );
     },
   );
 }
 
-/// generated route for
-/// [_i4.SnapperShiftProcessPage]
-class SnapperShiftProcessRoute extends _i7.PageRouteInfo<void> {
-  const SnapperShiftProcessRoute({List<_i7.PageRouteInfo>? children})
-      : super(
-          SnapperShiftProcessRoute.name,
-          initialChildren: children,
-        );
+class SnapperShiftEndRouteArgs {
+  const SnapperShiftEndRouteArgs({
+    this.key,
+    required this.shiftRemote,
+  });
 
-  static const String name = 'SnapperShiftProcessRoute';
+  final _i7.Key? key;
 
-  static _i7.PageInfo page = _i7.PageInfo(
-    name,
-    builder: (data) {
-      return const _i4.SnapperShiftProcessPage();
-    },
-  );
+  final _i8.ShiftModel shiftRemote;
+
+  @override
+  String toString() {
+    return 'SnapperShiftEndRouteArgs{key: $key, shiftRemote: $shiftRemote}';
+  }
 }
 
 /// generated route for
-/// [_i5.SnapperShiftStartPage]
+/// [_i4.SnapperShiftStartPage]
 class SnapperShiftStartRoute
-    extends _i7.PageRouteInfo<SnapperShiftStartRouteArgs> {
+    extends _i6.PageRouteInfo<SnapperShiftStartRouteArgs> {
   SnapperShiftStartRoute({
-    _i8.Key? key,
-    required _i9.ShiftModel shiftRemote,
-    List<_i7.PageRouteInfo>? children,
+    _i7.Key? key,
+    required _i8.ShiftModel shiftRemote,
+    List<_i6.PageRouteInfo>? children,
   }) : super(
           SnapperShiftStartRoute.name,
           args: SnapperShiftStartRouteArgs(
@@ -118,11 +124,11 @@ class SnapperShiftStartRoute
 
   static const String name = 'SnapperShiftStartRoute';
 
-  static _i7.PageInfo page = _i7.PageInfo(
+  static _i6.PageInfo page = _i6.PageInfo(
     name,
     builder: (data) {
       final args = data.argsAs<SnapperShiftStartRouteArgs>();
-      return _i5.SnapperShiftStartPage(
+      return _i4.SnapperShiftStartPage(
         key: args.key,
         shiftRemote: args.shiftRemote,
       );
@@ -136,9 +142,9 @@ class SnapperShiftStartRouteArgs {
     required this.shiftRemote,
   });
 
-  final _i8.Key? key;
+  final _i7.Key? key;
 
-  final _i9.ShiftModel shiftRemote;
+  final _i8.ShiftModel shiftRemote;
 
   @override
   String toString() {
@@ -147,13 +153,13 @@ class SnapperShiftStartRouteArgs {
 }
 
 /// generated route for
-/// [_i6.SnapperShiftStartReportPage]
+/// [_i5.SnapperShiftStartReportPage]
 class SnapperShiftStartReportRoute
-    extends _i7.PageRouteInfo<SnapperShiftStartReportRouteArgs> {
+    extends _i6.PageRouteInfo<SnapperShiftStartReportRouteArgs> {
   SnapperShiftStartReportRoute({
-    _i8.Key? key,
-    required _i9.SnapperShift snapperShift,
-    List<_i7.PageRouteInfo>? children,
+    _i7.Key? key,
+    required _i8.SnapperShift snapperShift,
+    List<_i6.PageRouteInfo>? children,
   }) : super(
           SnapperShiftStartReportRoute.name,
           args: SnapperShiftStartReportRouteArgs(
@@ -165,11 +171,11 @@ class SnapperShiftStartReportRoute
 
   static const String name = 'SnapperShiftStartReportRoute';
 
-  static _i7.PageInfo page = _i7.PageInfo(
+  static _i6.PageInfo page = _i6.PageInfo(
     name,
     builder: (data) {
       final args = data.argsAs<SnapperShiftStartReportRouteArgs>();
-      return _i6.SnapperShiftStartReportPage(
+      return _i5.SnapperShiftStartReportPage(
         key: args.key,
         snapperShift: args.snapperShift,
       );
@@ -183,9 +189,9 @@ class SnapperShiftStartReportRouteArgs {
     required this.snapperShift,
   });
 
-  final _i8.Key? key;
+  final _i7.Key? key;
 
-  final _i9.SnapperShift snapperShift;
+  final _i8.SnapperShift snapperShift;
 
   @override
   String toString() {

@@ -15,7 +15,7 @@ class SnapperShiftPage extends HookConsumerWidget {
         ref.read(snapperShiftViewModelProvider.notifier);
     final activeShifts =
         ref.watch(snapperShiftViewModelProvider).activeShifts.value;
-    
+
     return Scaffold(
       appBar: AppBar(
         title: Text("Shift"),
@@ -35,7 +35,7 @@ class SnapperShiftPage extends HookConsumerWidget {
                   ),
                 ),
                 IconButton(
-                    onPressed: () async{
+                    onPressed: () async {
                       await snapperShiftViewModel.getLocalShift();
                       // await snapperShiftViewModel.setLocalShift();
                     },
@@ -47,23 +47,15 @@ class SnapperShiftPage extends HookConsumerWidget {
             ),
             children: [
               ListTile(
-                onTap: () => context.pushRoute( SnapperShiftStartRoute(
-                  shiftRemote: activeShift,   
+                onTap: () => context.pushRoute(SnapperShiftStartRoute(
+                  shiftRemote: activeShift,
                 )),
                 title: Text("Start"),
                 trailing: Icon(Icons.arrow_forward_ios, color: Colors.grey),
               ),
               ListTile(
-                onTap: () =>
-                    context.pushRoute(const SnapperShiftProcessRoute()),
-                title: Text("In procces"),
-                trailing: Icon(
-                  Icons.arrow_forward_ios,
-                  color: Colors.grey,
-                ),
-              ),
-              ListTile(
-                onTap: () => context.pushRoute(const SnapperShiftEndRoute()),
+                onTap: () => context
+                    .pushRoute(SnapperShiftEndRoute(shiftRemote: activeShift)),
                 title: Text("End"),
                 trailing: Icon(
                   Icons.arrow_forward_ios,
