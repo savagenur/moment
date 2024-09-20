@@ -11,7 +11,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:moment/core/constants/design_dimensions.dart';
 import 'package:moment/core/enums/snapper_shift_photo_type.dart';
 import 'package:moment/core/extensions/to_double_extension.dart';
-import 'package:moment/core/utils.dart';
+import 'package:moment/core/utils/utils.dart';
 import 'package:moment/features/app/injection_container.dart';
 import 'package:moment/features/app/routes/app_router.gr.dart';
 import 'package:moment/features/app/widgets/primary_button.dart';
@@ -28,10 +28,10 @@ import 'package:uuid/uuid.dart';
 
 @RoutePage()
 class SnapperShiftEndPage extends HookConsumerWidget {
-  final ShiftModel shiftRemote;
+  final ShiftModel shift;
   const SnapperShiftEndPage({
     super.key,
-    required this.shiftRemote,
+    required this.shift,
   });
 
   @override
@@ -39,8 +39,8 @@ class SnapperShiftEndPage extends HookConsumerWidget {
     final shiftViewModel = ref.watch(snapperShiftViewModelProvider);
     final shiftViewModelNotifier =
         ref.read(snapperShiftViewModelProvider.notifier);
-    final snapperShiftLocal = shiftViewModel.shiftLocal?.value;
-    final snapperShiftRemote = shiftRemote as SnapperShift;
+    final snapperShiftLocal = shiftViewModel.shift?.value;
+    final snapperShiftRemote = shift as SnapperShift;
     final shiftComparator = SnapperShiftComparator(
       local: snapperShiftLocal,
       remote: snapperShiftRemote,
@@ -66,95 +66,95 @@ class SnapperShiftEndPage extends HookConsumerWidget {
               child: Text("press"))
         ],
       ),
-      body: SingleChildScrollView(
-        padding: DDimension.mediumPadding.all,
-        child: Column(
-          children: [
-            SnapperShiftDetailItem(
-              shiftPhotoType: PhotoType.clothes,
-              index: "1",
-              title: "Clothes Photo",
-              shift: shiftLatest,
-              trailing: IconButton(
-                  onPressed: () => _addPhoto(
-                        shiftViewModelNotifier,
-                        shiftComparator,
-                        photoType: PhotoType.clothes,
-                      ),
-                  icon: Icon(Icons.camera_alt_outlined)),
-            ),
-            SnapperShiftDetailItem(
-              shiftPhotoType: PhotoType.startWorkPlace,
-              index: "2",
-              shift: shiftLatest,
-              title: "Workplace Photo",
-              trailing: IconButton(
-                  onPressed: () => _addPhoto(
-                        shiftViewModelNotifier,
-                        shiftComparator,
-                        photoType: PhotoType.startWorkPlace,
-                      ),
-                  icon: Icon(Icons.camera_alt_outlined)),
-            ),
-            SnapperShiftDetailItem(
-              shiftPhotoType: PhotoType.startCamera,
-              index: "3",
-              shift: shiftLatest,
-              title: "Camera Photo",
-              trailing: IconButton(
-                  onPressed: () => _addPhoto(
-                        shiftViewModelNotifier,
-                        shiftComparator,
-                        photoType: PhotoType.startCamera,
-                      ),
-                  icon: Icon(Icons.camera_alt_outlined)),
-            ),
-            SnapperShiftDetailItem(
-              shiftPhotoType: PhotoType.startLaptop,
-              index: "4",
-              shift: shiftLatest,
-              title: "Laptop Photo",
-              trailing: IconButton(
-                  onPressed: () => _addPhoto(
-                        shiftViewModelNotifier,
-                        shiftComparator,
-                        photoType: PhotoType.startLaptop,
-                      ),
-                  icon: Icon(Icons.camera_alt_outlined)),
-            ),
-            SnapperShiftDetailItem(
-              shiftPhotoType: PhotoType.startWires,
-              index: "5",
-              shift: shiftLatest,
-              title: "Wires Photo",
-              trailing: IconButton(
-                  onPressed: () => _addPhoto(
-                        shiftViewModelNotifier,
-                        shiftComparator,
-                        photoType: PhotoType.startWires,
-                      ),
-                  icon: Icon(Icons.camera_alt_outlined)),
-            ),
-            Divider(),
-            SnapperShiftDetailItem(
-              shiftPhotoType: PhotoType.none,
-              index: "6",
-              title: "Shift start report",
-              onTap: () => context.pushRoute(SnapperShiftStartReportRoute(
-                snapperShift: shiftLatest!,
-              )),
-              trailing: _isStartReportCompleted((shiftLatest?.shiftStart))
-                  ? Icon(
-                      Icons.checklist_rtl,
-                      color: Colors.green,
-                    )
-                  : Icon(
-                      Icons.list,
-                    ),
-            ),
-          ],
-        ),
-      ),
+      // body: SingleChildScrollView(
+      //   padding: DDimension.mediumPadding.all,
+      //   child: Column(
+      //     children: [
+      //       SnapperShiftDetailItem(
+      //         shiftPhotoType: PhotoType.clothes,
+      //         index: "1",
+      //         title: "Clothes Photo",
+      //         shift: shiftLatest,
+      //         trailing: IconButton(
+      //             onPressed: () => _addPhoto(
+      //                   shiftViewModelNotifier,
+      //                   shiftComparator,
+      //                   photoType: PhotoType.clothes,
+      //                 ),
+      //             icon: Icon(Icons.camera_alt_outlined)),
+      //       ),
+      //       SnapperShiftDetailItem(
+      //         shiftPhotoType: PhotoType.startWorkPlace,
+      //         index: "2",
+      //         shift: shiftLatest,
+      //         title: "Workplace Photo",
+      //         trailing: IconButton(
+      //             onPressed: () => _addPhoto(
+      //                   shiftViewModelNotifier,
+      //                   shiftComparator,
+      //                   photoType: PhotoType.startWorkPlace,
+      //                 ),
+      //             icon: Icon(Icons.camera_alt_outlined)),
+      //       ),
+      //       SnapperShiftDetailItem(
+      //         shiftPhotoType: PhotoType.startCamera,
+      //         index: "3",
+      //         shift: shiftLatest,
+      //         title: "Camera Photo",
+      //         trailing: IconButton(
+      //             onPressed: () => _addPhoto(
+      //                   shiftViewModelNotifier,
+      //                   shiftComparator,
+      //                   photoType: PhotoType.startCamera,
+      //                 ),
+      //             icon: Icon(Icons.camera_alt_outlined)),
+      //       ),
+      //       SnapperShiftDetailItem(
+      //         shiftPhotoType: PhotoType.startLaptop,
+      //         index: "4",
+      //         shift: shiftLatest,
+      //         title: "Laptop Photo",
+      //         trailing: IconButton(
+      //             onPressed: () => _addPhoto(
+      //                   shiftViewModelNotifier,
+      //                   shiftComparator,
+      //                   photoType: PhotoType.startLaptop,
+      //                 ),
+      //             icon: Icon(Icons.camera_alt_outlined)),
+      //       ),
+      //       SnapperShiftDetailItem(
+      //         shiftPhotoType: PhotoType.startWires,
+      //         index: "5",
+      //         shift: shiftLatest,
+      //         title: "Wires Photo",
+      //         trailing: IconButton(
+      //             onPressed: () => _addPhoto(
+      //                   shiftViewModelNotifier,
+      //                   shiftComparator,
+      //                   photoType: PhotoType.startWires,
+      //                 ),
+      //             icon: Icon(Icons.camera_alt_outlined)),
+      //       ),
+      //       Divider(),
+      //       SnapperShiftDetailItem(
+      //         shiftPhotoType: PhotoType.none,
+      //         index: "6",
+      //         title: "Shift start report",
+      //         onTap: () => context.pushRoute(SnapperShiftStartReportRoute(
+      //           snapperShift: shiftLatest!,
+      //         )),
+      //         trailing: _isStartReportCompleted((shiftLatest?.shiftStart))
+      //             ? Icon(
+      //                 Icons.checklist_rtl,
+      //                 color: context.colors.primaryGreen,
+      //               )
+      //             : Icon(
+      //                 Icons.list,
+      //               ),
+      //       ),
+      //     ],
+      //   ),
+      // ),
       bottomNavigationBar: SafeArea(
         child: PrimaryButton(
           title: Text("Submit"),
@@ -175,7 +175,7 @@ class SnapperShiftEndPage extends HookConsumerWidget {
   Future<void> _handleSubmit(
       SnapperShiftViewModel shiftViewModelNotifier, SnapperShift shift) async {
     try {
-      await shiftViewModelNotifier.updateRemoteShift(
+      await shiftViewModelNotifier.updateShift(
         shift,
       );
       Fluttertoast.showToast(
@@ -234,7 +234,7 @@ class SnapperShiftEndPage extends HookConsumerWidget {
     if (file != null) {
       final shiftLatest = shiftComparator.getLatestShift();
 
-      PhotoModel? newPhoto = getPhotoModel(shiftLatest, file, photoType);
+      PhotoModel? newPhoto = getPhotoModel(shiftLatest, photoType);
 
       final newShift = shiftLatest?.copyWith(
         updatedAt: DateTime.now(),
@@ -249,7 +249,8 @@ class SnapperShiftEndPage extends HookConsumerWidget {
       );
       if (newShift != null) {
         shiftViewModelNotifier.uploadMedia(
-          newPhoto,
+          file,
+          newPhoto: newPhoto,
           shift: newShift,
           isVideo: false,
         );
@@ -259,13 +260,11 @@ class SnapperShiftEndPage extends HookConsumerWidget {
 
   PhotoModel getPhotoModel(
     SnapperShift? shiftLatest,
-    File? photoFile,
     PhotoType photoType,
   ) {
     return PhotoModel(
       id: const Uuid().v1(),
       photoType: photoType,
-      file: photoFile,
       createdAt: DateTime.now(),
       restaurantName: shiftLatest?.restaurantName,
       shiftId: shiftLatest?.id,

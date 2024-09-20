@@ -64,13 +64,13 @@ class SnapperNavigationRoute extends _i6.PageRouteInfo<void> {
 class SnapperShiftEndRoute extends _i6.PageRouteInfo<SnapperShiftEndRouteArgs> {
   SnapperShiftEndRoute({
     _i7.Key? key,
-    required _i8.ShiftModel shiftRemote,
+    required _i8.ShiftModel shift,
     List<_i6.PageRouteInfo>? children,
   }) : super(
           SnapperShiftEndRoute.name,
           args: SnapperShiftEndRouteArgs(
             key: key,
-            shiftRemote: shiftRemote,
+            shift: shift,
           ),
           initialChildren: children,
         );
@@ -83,7 +83,7 @@ class SnapperShiftEndRoute extends _i6.PageRouteInfo<SnapperShiftEndRouteArgs> {
       final args = data.argsAs<SnapperShiftEndRouteArgs>();
       return _i3.SnapperShiftEndPage(
         key: args.key,
-        shiftRemote: args.shiftRemote,
+        shift: args.shift,
       );
     },
   );
@@ -92,16 +92,16 @@ class SnapperShiftEndRoute extends _i6.PageRouteInfo<SnapperShiftEndRouteArgs> {
 class SnapperShiftEndRouteArgs {
   const SnapperShiftEndRouteArgs({
     this.key,
-    required this.shiftRemote,
+    required this.shift,
   });
 
   final _i7.Key? key;
 
-  final _i8.ShiftModel shiftRemote;
+  final _i8.ShiftModel shift;
 
   @override
   String toString() {
-    return 'SnapperShiftEndRouteArgs{key: $key, shiftRemote: $shiftRemote}';
+    return 'SnapperShiftEndRouteArgs{key: $key, shift: $shift}';
   }
 }
 
@@ -111,13 +111,13 @@ class SnapperShiftStartRoute
     extends _i6.PageRouteInfo<SnapperShiftStartRouteArgs> {
   SnapperShiftStartRoute({
     _i7.Key? key,
-    required _i8.ShiftModel shiftRemote,
+    required _i8.SnapperShift snapperShift,
     List<_i6.PageRouteInfo>? children,
   }) : super(
           SnapperShiftStartRoute.name,
           args: SnapperShiftStartRouteArgs(
             key: key,
-            shiftRemote: shiftRemote,
+            snapperShift: snapperShift,
           ),
           initialChildren: children,
         );
@@ -130,7 +130,7 @@ class SnapperShiftStartRoute
       final args = data.argsAs<SnapperShiftStartRouteArgs>();
       return _i4.SnapperShiftStartPage(
         key: args.key,
-        shiftRemote: args.shiftRemote,
+        snapperShift: args.snapperShift,
       );
     },
   );
@@ -139,16 +139,16 @@ class SnapperShiftStartRoute
 class SnapperShiftStartRouteArgs {
   const SnapperShiftStartRouteArgs({
     this.key,
-    required this.shiftRemote,
+    required this.snapperShift,
   });
 
   final _i7.Key? key;
 
-  final _i8.ShiftModel shiftRemote;
+  final _i8.SnapperShift snapperShift;
 
   @override
   String toString() {
-    return 'SnapperShiftStartRouteArgs{key: $key, shiftRemote: $shiftRemote}';
+    return 'SnapperShiftStartRouteArgs{key: $key, snapperShift: $snapperShift}';
   }
 }
 

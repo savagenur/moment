@@ -17,7 +17,6 @@ abstract class BaseShiftStartModel {
 
 @freezed
 class ShiftStartModel with _$ShiftStartModel {
-  // ignore: unused_element
   const ShiftStartModel._();
   @Implements<BaseShiftStartModel>()
   const factory ShiftStartModel.snapper({
@@ -44,44 +43,35 @@ class ShiftStartModel with _$ShiftStartModel {
       _$ShiftStartModelFromJson(
         json,
       );
-  T forFirestore<T>() {
-    if (this is SnapperShiftStart) {
-      final shiftStart = this as SnapperShiftStart;
-      return shiftStart.copyWith(
-        clothesPhoto: _setPhotoArgToNull(shiftStart.clothesPhoto),
-        startWorkPlacePhoto: _setPhotoArgToNull(shiftStart.startWorkPlacePhoto),
-        startCameraPhoto: _setPhotoArgToNull(shiftStart.startCameraPhoto),
-        startLaptopPhoto: _setPhotoArgToNull(shiftStart.startLaptopPhoto),
-        startWiresPhoto: _setPhotoArgToNull(shiftStart.startWiresPhoto),
-      ) as T;
-    } else {
-      throw ArgumentError('Unsupported type: $runtimeType');
-    }
-  }
 
-  PhotoModel? _setPhotoArgToNull(PhotoModel? photo) {
-    return photo?.copyWith(
-      file: null,
-      isLoading: false,
-      hasError: false,
+  bool get isCompleted {
+    return when(
+      snapper: (id,
+          shiftId,
+          createdAt,
+          updatedAt,
+          clothesPhoto,
+          startWorkPlacePhoto,
+          startCameraPhoto,
+          startLaptopPhoto,
+          startWiresPhoto,
+          startReport) {
+        return clothesPhoto != null &&
+            startWorkPlacePhoto != null &&
+            startCameraPhoto != null &&
+            startLaptopPhoto != null &&
+            startWiresPhoto != null &&
+            startReport.startFrames != null &&
+            startReport.startBrokenFrames != null &&
+            startReport.startPaperSets != null &&
+            startReport.startBrokenPaperSets != null &&
+            startReport.startPrints != null;
+      },
+      assistant: (id, shiftId, createdAt, updatedAt) {
+        return false;
+      },
     );
   }
-  // Map<String, dynamic> toSqlJson() {
-  //   final data = toJson();
-  //   if (this is SnapperShiftStart) {
-  //     final shiftStart = this as SnapperShiftStart;
-  //     data.addEntries([
-  //       MapEntry("clothesPhoto", shiftStart.clothesPhoto),
-  //       MapEntry("startWorkPlacePhoto", shiftStart.startWorkPlacePhoto),
-  //       MapEntry("startCameraPhoto", shiftStart.startCameraPhoto),
-  //       MapEntry("startLaptopPhoto", shiftStart.startLaptopPhoto),
-  //       MapEntry("startWiresPhoto", shiftStart.startWiresPhoto),
-  //     ]);
-  //     return data;
-  //   } else {
-  //     throw ArgumentError('Unsupported type: $runtimeType');
-  //   }
-  // }
 
   PhotoModel? getPhoto(
     PhotoType photoType,

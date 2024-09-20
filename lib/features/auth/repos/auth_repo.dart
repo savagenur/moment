@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:moment/core/enums/user_role.dart';
 import 'package:moment/core/failure/failure.dart';
-import 'package:moment/core/utils.dart';
+import 'package:moment/core/utils/utils.dart';
 import 'package:moment/features/auth/models/user/user_model.dart';
 
 class AuthRepo {

@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:moment/core/enums/snapper_shift_photo_type.dart';
-import 'package:moment/core/utils.dart';
+import 'package:moment/core/utils/utils.dart';
 import 'package:moment/features/app/injection_container.dart';
 import 'package:moment/features/photo/models/photo/photo_model.dart';
 import 'package:moment/features/shift/models/shift/shift_model.dart';
@@ -20,7 +20,6 @@ class SnapperShiftViewModel extends _$SnapperShiftViewModel {
 
   @override
   SnapperShiftState build() {
-    getLocalShift();
     // Start listening to shifts when the ViewModel is initialized
     final inactiveShifts = onInactiveShiftListener();
     final activeShifts = onActiveShiftListener();
@@ -58,33 +57,26 @@ class SnapperShiftViewModel extends _$SnapperShiftViewModel {
     });
   }
 
-  Future<void> setLocalShift(SnapperShift shift) async {
-    try {
-      await _shiftRepo.setLocalShift(shift);
-      state = state.copyWith(shiftLocal: AsyncValue.data(shift));
-    } catch (e) {
-      print(e);
-      state =
-          state.copyWith(shiftLocal: AsyncValue.error(e, StackTrace.current));
-    }
+  void setShift(SnapperShift? shift) async {
+    state = state.copyWith(shift: AsyncValue.data(shift));
   }
 
   /// Method to get the local shift from local storage
-  Future<void> getLocalShift() async {
+  Future<void> getShift(String id) async {
     try {
-      final shiftLocal = await _shiftRepo.getLocalShift();
-      if (shiftLocal != null) {
-        state = state.copyWith(shiftLocal: AsyncValue.data(shiftLocal));
+      final shift = await _shiftRepo.getShift(id);
+      if (shift != null) {
+        setShift(shift);
       }
     } catch (e) {
-      state =
-          state.copyWith(shiftLocal: AsyncValue.error(e, StackTrace.current));
+      state = state.copyWith(shift: AsyncValue.error(e, StackTrace.current));
     }
   }
 
-  Future<void> updateRemoteShift(SnapperShift shift) async {
+  Future<void> updateShift(SnapperShift? shift) async {
     try {
-      await _shiftRepo.updateRemoteShift(shift);
+      await _shiftRepo.updateShift(shift);
+      setShift(shift);
     } catch (e) {
       logger.e(e);
       throw Exception(e);
@@ -92,60 +84,49 @@ class SnapperShiftViewModel extends _$SnapperShiftViewModel {
   }
 
   Future<void> uploadMedia(
-    PhotoModel newPhoto, {
-    required SnapperShift shift,
+    File file, {
+    required PhotoModel newPhoto,
+    required SnapperShift? shift,
     required bool isVideo,
   }) async {
     try {
-      state = state.copyWith(
-        shiftLocal: AsyncData(
-          shift.copyWith(
-            shiftStart: shift.shiftStart.updateShiftStartPhoto(
-              newPhoto.photoType,
-              newPhoto: newPhoto.copyWith(
-                isLoading: true,
-                hasError: false,
-              ),
-            )!,
+      setShift(shift?.copyWith(
+        shiftStart: shift.shiftStart.updateShiftStartPhoto(
+          newPhoto.photoType,
+          newPhoto: newPhoto.copyWith(
+            isLoading: true,
+            hasError: false,
           ),
-        ),
-      );
+        )!,
+      ));
       final imageUrl = await _shiftRepo.uploadMedia(
-        newPhoto.file!,
+        file,
         isVideo: isVideo,
         shiftId: newPhoto.shiftId!,
         snapperShiftPhotoType: newPhoto.photoType,
       );
-      state = state.copyWith(
-        shiftLocal: AsyncData(
-          shift.copyWith(
-            shiftStart: shift.shiftStart.updateShiftStartPhoto(
-              newPhoto.photoType,
-              newPhoto: newPhoto.copyWith(
-                imageUrl: imageUrl,
-                isLoading: false,
-                hasError: false,
-              ),
-            )!,
+      final updatedShift = shift?.copyWith(
+        shiftStart: shift.shiftStart.updateShiftStartPhoto(
+          newPhoto.photoType,
+          newPhoto: newPhoto.copyWith(
+            imageUrl: imageUrl,
+            isLoading: false,
+            hasError: false,
           ),
-        ),
+        )!,
       );
+      await _shiftRepo.updateShift(updatedShift);
     } catch (e) {
-      state = state.copyWith(
-        shiftLocal: AsyncData(
-          shift.copyWith(
-            shiftStart: shift.shiftStart.updateShiftStartPhoto(
-              newPhoto.photoType,
-              newPhoto: newPhoto.copyWith(
-                isLoading: false,
-                hasError: true,
-              ),
-            )!,
+      setShift(shift?.copyWith(
+        shiftStart: shift.shiftStart.updateShiftStartPhoto(
+          newPhoto.photoType,
+          newPhoto: newPhoto.copyWith(
+            isLoading: false,
+            hasError: true,
           ),
-        ),
-      );
+        )!,
+      ));
       logger.e(e);
     }
-    _shiftRepo.setLocalShift(state.shiftLocal!.value!);
   }
 }

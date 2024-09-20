@@ -18,18 +18,13 @@ class PhotoModel with _$PhotoModel {
     final String? userName,
     final String? restaurantName,
     required final DateTime? createdAt,
-    @FileJsonConverter() final File? file,
     final String? imageUrl,
+    @JsonKey(includeToJson: false)
     @Default(false) final bool? isLoading,
+    @JsonKey(includeToJson: false)
     @Default(false) final bool? hasError,
   }) = _PhotoModel;
   factory PhotoModel.fromJson(Map<String, dynamic> json) =>
       _$PhotoModelFromJson(json);
-  PhotoModel? forFirestore() {
-    return copyWith(
-      file: null,
-      isLoading: null,
-      hasError: null,
-    );
-  }
+  
 }

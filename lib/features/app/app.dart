@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:moment/features/app/injection_container.dart';
 import 'package:moment/features/app/internet/internet_connection.dart';
@@ -18,7 +19,9 @@ class MomentApp extends HookWidget {
       return sl<InternetConnection>().dispose;
     }, []);
     return MaterialApp.router(
-      builder: EasyLoading.init(),
+      builder: EasyLoading.init(
+        builder: FlutterSmartDialog.init(),
+      ),
       routerConfig: appRouter.config(),
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,

@@ -6,7 +6,6 @@ import 'package:moment/core/enums/snapper_shift_photo_type.dart';
 import 'package:moment/core/extensions/build_context_extension.dart';
 import 'package:moment/features/app/widgets/loader.dart';
 import 'package:moment/features/shift/models/shift/shift_model.dart';
-import 'package:moment/features/shift/models/shift_start/shift_start_model.dart';
 
 class SnapperShiftDetailItem extends ConsumerWidget {
   final String index;
@@ -24,7 +23,7 @@ class SnapperShiftDetailItem extends ConsumerWidget {
     this.date,
     this.onTap,
     this.trailing,
-    this.shift,
+    required this.shift,
     this.shiftPhotoType = PhotoType.none,
   });
 
@@ -50,8 +49,12 @@ class SnapperShiftDetailItem extends ConsumerWidget {
           ),
           Stack(
             children: [
+              SizedBox(
+                width: 40,
+                height: 50,
+              ),
               buildImage(),
-              buildLoader(),
+              buildLoader(context),
               buildError(),
             ],
           )
@@ -67,19 +70,13 @@ class SnapperShiftDetailItem extends ConsumerWidget {
     final latestPhoto = shift?.shiftStart.getPhoto(
       shiftPhotoType,
     );
-    if (latestPhoto?.file != null) {
-      return Image.file(
-        latestPhoto!.file!,
-        width: 40,
-        fit: BoxFit.cover,
-      );
-    }
 
     // If only remote photo exists
     if (latestPhoto?.imageUrl != null) {
       return CachedNetworkImage(
         imageUrl: latestPhoto!.imageUrl!,
         width: 40,
+        height: 50,
         fit: BoxFit.cover,
       );
     }
@@ -87,17 +84,21 @@ class SnapperShiftDetailItem extends ConsumerWidget {
     return const SizedBox();
   }
 
-  Widget buildLoader() {
+  Widget buildLoader(BuildContext context) {
     if (shift?.shiftStart
             .getPhoto(
               shiftPhotoType,
             )
             ?.isLoading ??
         false) {
-      return const Positioned.fill(
-          child: Loader(
-        color: Colors.white,
-      ));
+      return  SizedBox(
+        height: 50,
+        width: 40,
+        child: Positioned.fill(
+            child: Loader(
+          color: context.colors.primaryGreen,
+        )),
+      );
     } else {
       return SizedBox();
     }

@@ -1,15 +1,11 @@
-import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:moment/core/enums/snapper_shift_photo_type.dart';
-import 'package:moment/core/utils.dart';
-import 'package:moment/features/app/injection_container.dart';
-import 'package:moment/features/app/repos/database/database_helper.dart';
+import 'package:moment/core/utils/utils.dart';
 import 'package:moment/features/shift/models/shift/shift_model.dart';
-import 'package:sqflite/sqflite.dart';
 
 class SnapperShiftRepo {
   Stream<List<SnapperShift>> getSnapperShiftList({required int status}) {
@@ -42,13 +38,14 @@ class SnapperShiftRepo {
     }
   }
 
-  Future<void> updateRemoteShift(SnapperShift shift) async {
+  Future<void> updateShift(SnapperShift? shift) async {
     try {
-      final updatedShift = shift.forFirestore<SnapperShift>();
-      await firestore.collection("shifts").doc(shift.id).set(
-            updatedShift.toJson(),
-            SetOptions(merge: true),
-          );
+      if (shift != null) {
+        await firestore.collection("shifts").doc(shift.id).set(
+              shift.toJson(),
+              SetOptions(merge: true),
+            );
+      }
     } catch (e) {
       logger.e(e.toString());
       throw Exception(e);
@@ -84,37 +81,13 @@ class SnapperShiftRepo {
     }
   }
 
-  Future<void> setLocalShift(SnapperShift? shift) async {
-    final db = await sl<DatabaseHelper>().database;
-    await db.insert(
-      'shift',
-      {
-        'id': 1,
-        'shift_data': jsonEncode(shift?.toJson()),
-        'runtimeType': "snapper"
-      },
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
-  }
-
-  Future<SnapperShift?> getLocalShift() async {
-    final db = await sl<DatabaseHelper>().database;
-    // await db.delete("shift");
-    List<Map<String, dynamic>> maps = await db.query('shift');
-    if (maps.isNotEmpty) {
-      try {
-        final shiftMap = maps.first['shift_data'];
-        return shiftMap != "null"
-            ? SnapperShift.fromJson(jsonDecode(shiftMap))
-            : null;
-      } catch (e) {
-        throw Exception("Get local shift method: $e");
-      }
+  Future<SnapperShift?> getShift(String id) async {
+    try {
+      final shiftData = await firestore.collection("shifts").doc(id).get();
+      final shift = shiftData.data();
+      return shift != null ? ShiftModel.fromJson(shift) as SnapperShift? : null;
+    } catch (e) {
+     throw Exception(e);
     }
-    return null;
   }
-}
-
-ShiftModel fromSql(Map<String, dynamic> json) {
-  return ShiftModel.fromJson(json);
 }

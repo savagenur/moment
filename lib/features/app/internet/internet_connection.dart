@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:moment/core/constants/design_dimensions.dart';
 import 'package:moment/core/extensions/to_double_extension.dart';
 import 'package:moment/features/app/injection_container.dart';

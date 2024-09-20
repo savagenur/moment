@@ -38,14 +38,14 @@ class SnapperShiftStartReportPage extends HookConsumerWidget {
         text: intToTextConverter(snapperStartReport?.startBrokenPaperSets));
     final startPrintsController = useTextEditingController(
         text: intToTextConverter(snapperStartReport?.startPrints));
+    Timer? debounce;
+
     useEffect(
       () {
-        Timer? _debounce;
-
         void updateShift() {
-          if (_debounce?.isActive ?? false) _debounce!.cancel();
-          _debounce = Timer(const Duration(milliseconds: 300), () {
-            ref.read(snapperShiftViewModelProvider.notifier).setLocalShift(
+          if (debounce?.isActive ?? false) debounce!.cancel();
+          debounce = Timer(const Duration(milliseconds: 500), () {
+            ref.read(snapperShiftViewModelProvider.notifier).updateShift(
                   snapperShift.copyWith(
                     shiftStart: snapperShift.shiftStart!.copyWith(
                       startReport: SnapperStartReport(
@@ -72,13 +72,18 @@ class SnapperShiftStartReportPage extends HookConsumerWidget {
 
         // Cleanup listeners when the widget is disposed
         return () {
-          framesController.removeListener(updateShift);
-          brokenFramesController.removeListener(updateShift);
-          paperSetsController.removeListener(updateShift);
-          brokenPaperSetsController.removeListener(updateShift);
-          startPrintsController.removeListener(updateShift);
+          if (debounce?.isActive ?? false) {
+            debounce!.cancel();
+            updateShift(); // Ensures the last update is made before disposal
+            framesController.removeListener(updateShift);
+            brokenFramesController.removeListener(updateShift);
+            paperSetsController.removeListener(updateShift);
+            brokenPaperSetsController.removeListener(updateShift);
+            startPrintsController.removeListener(updateShift);
+          }
         };
       },
+      [],
     );
 
     return Scaffold(

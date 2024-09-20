@@ -1,16 +1,13 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:moment/core/constants/toast/toast_types.dart';
-import 'package:moment/core/utils.dart';
+import 'package:moment/core/utils/app_dialog.dart';
 import 'package:moment/features/app/injection_container.dart';
 import 'package:moment/features/app/routes/app_router.gr.dart';
 import 'package:moment/features/auth/view_models/auth_viewmodel.dart';
 import 'package:moment/features/shift/models/shift/shift_model.dart';
 import 'package:moment/features/shift/repos/snapper_shift_repo.dart';
-import 'package:moment/features/shift/view_models/snapper/bloc/snapper_shift_viewmodel.dart';
 import 'package:uuid/uuid.dart';
 
 class SnapperProfilePage extends HookConsumerWidget {
@@ -74,8 +71,9 @@ class SnapperProfilePage extends HookConsumerWidget {
               predicate: (route) => false,
             );
           },
-          error: (error, stackTrace) => snackBar(context,
-              message: error.toString(), toastType: ToastType.failure),
+          error: (error, stackTrace) => AppDialog.showError(
+            error.toString(),
+          ),
           loading: () => EasyLoading.show(status: "Log out..."),
         );
       },

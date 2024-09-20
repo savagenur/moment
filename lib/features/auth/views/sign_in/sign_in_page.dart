@@ -5,7 +5,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:moment/core/constants/design_dimensions.dart';
 import 'package:moment/core/constants/toast/toast_types.dart';
 import 'package:moment/core/extensions/to_double_extension.dart';
-import 'package:moment/core/utils.dart';
+import 'package:moment/core/utils/app_dialog.dart';
+import 'package:moment/core/utils/utils.dart';
 import 'package:moment/features/app/routes/app_router.gr.dart';
 import 'package:moment/features/app/widgets/loader.dart';
 import 'package:moment/features/app/widgets/primary_button.dart';
@@ -98,16 +99,10 @@ class SignInPage extends HookConsumerWidget {
               predicate: (route) => false,
             );
             isLoading.value = false;
-            snackBar(context,
-                message: "Successfully signed in!",
-                toastType: ToastType.success);
+            AppDialog.showInfo("Successfully signed in!");
           },
           error: (error, _) {
-            snackBar(
-              context,
-              message: error.toString(),
-              toastType: ToastType.failure,
-            );
+            AppDialog.showError(error.toString());
             isLoading.value = false;
           },
           loading: () {

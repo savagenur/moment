@@ -4,11 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:moment/features/app/app.dart';
 import 'package:moment/features/app/injection_container.dart';
+import 'package:moment/features/app/repos/database/database_helper.dart';
 import 'package:moment/features/auth/auth_di.dart';
 import 'package:moment/features/shift/models/shift/shift_model.dart';
 import 'package:moment/features/shift/models/start_report/start_report_model.dart';
 import 'package:moment/features/shift/repos/snapper_shift_repo.dart';
 import 'package:moment/firebase_options.dart';
+import 'package:sqflite/sqflite.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -53,6 +55,7 @@ Future<void> main() async {
 // restaurantName: "Odyssey"
 //     )
 //   ));
+
   runApp(
     const ProviderScope(
       child: MomentApp(),

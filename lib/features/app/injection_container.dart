@@ -14,5 +14,4 @@ Future<void> initDependencies() async {
   sl.registerLazySingleton(
     () => SnapperShiftRepo(),
   );
-  sl.registerSingleton(DatabaseHelper());
 }
