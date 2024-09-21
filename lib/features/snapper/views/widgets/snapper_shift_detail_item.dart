@@ -31,13 +31,13 @@ class SnapperShiftDetailItem extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return ListTile(
       leading: Text(index),
-      // contentPadding: DDimension.smallPadding.horizontal,
       horizontalTitleGap: DDimension.smallPadding,
       onTap: onTap ?? () {},
       title: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(title),
               if (date != null)
@@ -47,17 +47,28 @@ class SnapperShiftDetailItem extends ConsumerWidget {
                 ),
             ],
           ),
-          Stack(
-            children: [
-              SizedBox(
-                width: 40,
-                height: 50,
-              ),
-              buildImage(),
-              buildLoader(context),
-              buildError(),
-            ],
-          )
+          SizedBox(
+            width: 40,
+            height: 50,
+            child: Stack(
+              children: [
+                buildImage(),
+                if (shift?.shiftStart.getPhoto(shiftPhotoType)?.isLoading ?? false)
+                  Positioned.fill(
+                    child: Loader(
+                      color: context.colors.primaryGreen,
+                    ),
+                  ),
+                if (shift?.shiftStart.getPhoto(shiftPhotoType)?.hasError ?? false)
+                  const Positioned.fill(
+                    child: Icon(
+                      Icons.error_outline,
+                      color: Colors.red,
+                    ),
+                  ),
+              ],
+            ),
+          ),
         ],
       ),
       trailing: trailing,
@@ -65,13 +76,8 @@ class SnapperShiftDetailItem extends ConsumerWidget {
   }
 
   Widget buildImage() {
-    // assert(shiftLocal != null || shiftRemote != null);
+    final latestPhoto = shift?.shiftStart.getPhoto(shiftPhotoType);
 
-    final latestPhoto = shift?.shiftStart.getPhoto(
-      shiftPhotoType,
-    );
-
-    // If only remote photo exists
     if (latestPhoto?.imageUrl != null) {
       return CachedNetworkImage(
         imageUrl: latestPhoto!.imageUrl!,
@@ -82,43 +88,5 @@ class SnapperShiftDetailItem extends ConsumerWidget {
     }
 
     return const SizedBox();
-  }
-
-  Widget buildLoader(BuildContext context) {
-    if (shift?.shiftStart
-            .getPhoto(
-              shiftPhotoType,
-            )
-            ?.isLoading ??
-        false) {
-      return  SizedBox(
-        height: 50,
-        width: 40,
-        child: Positioned.fill(
-            child: Loader(
-          color: context.colors.primaryGreen,
-        )),
-      );
-    } else {
-      return SizedBox();
-    }
-  }
-
-  Widget buildError() {
-    final hasError = shift?.shiftStart
-            .getPhoto(
-              shiftPhotoType,
-            )
-            ?.hasError ??
-        false;
-    if (hasError) {
-      return const Positioned.fill(
-          child: Icon(
-        Icons.error_outline,
-        color: Colors.red,
-      ));
-    } else {
-      return const SizedBox();
-    }
   }
 }

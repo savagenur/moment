@@ -27,6 +27,8 @@ class SnapperShiftStartReportPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final shiftViewModelNotifier =
+        ref.read(snapperShiftViewModelProvider.notifier);
     final snapperStartReport = snapperShift.shiftStart?.startReport;
     final framesController = useTextEditingController(
         text: intToTextConverter(snapperStartReport?.startFrames));
@@ -44,22 +46,22 @@ class SnapperShiftStartReportPage extends HookConsumerWidget {
       () {
         void updateShift() {
           if (debounce?.isActive ?? false) debounce!.cancel();
-          debounce = Timer(const Duration(milliseconds: 500), () {
-            ref.read(snapperShiftViewModelProvider.notifier).updateShift(
-                  snapperShift.copyWith(
-                    shiftStart: snapperShift.shiftStart!.copyWith(
-                      startReport: SnapperStartReport(
-                        startFrames: textToIntConverter(framesController),
-                        startBrokenFrames:
-                            textToIntConverter(brokenFramesController),
-                        startPaperSets: textToIntConverter(paperSetsController),
-                        startBrokenPaperSets:
-                            textToIntConverter(brokenPaperSetsController),
-                        startPrints: textToIntConverter(startPrintsController),
-                      ),
-                    ),
+          debounce = Timer(const Duration(milliseconds: 800), () {
+            shiftViewModelNotifier.updateShift(
+              snapperShift.copyWith(
+                shiftStart: snapperShift.shiftStart.copyWith(
+                  startReport: SnapperStartReport(
+                    startFrames: textToIntConverter(framesController),
+                    startBrokenFrames:
+                        textToIntConverter(brokenFramesController),
+                    startPaperSets: textToIntConverter(paperSetsController),
+                    startBrokenPaperSets:
+                        textToIntConverter(brokenPaperSetsController),
+                    startPrints: textToIntConverter(startPrintsController),
                   ),
-                );
+                ),
+              ),
+            );
           });
         }
 

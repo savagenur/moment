@@ -1,5 +1,5 @@
 class AppFailure {
-  final String? message;
+  final String message;
 
-  AppFailure({this.message = "Sorry, unexpected error ocurred!"});
+  AppFailure([this.message = "Sorry, unexpected error ocurred!"]);
 }

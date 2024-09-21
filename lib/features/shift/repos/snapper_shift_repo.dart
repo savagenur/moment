@@ -3,7 +3,9 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:moment/core/enums/snapper_shift_photo_type.dart';
+import 'package:moment/core/failure/failure.dart';
 import 'package:moment/core/utils/utils.dart';
 import 'package:moment/features/shift/models/shift/shift_model.dart';
 
@@ -38,7 +40,7 @@ class SnapperShiftRepo {
     }
   }
 
-  Future<void> updateShift(SnapperShift? shift) async {
+  Future<Either<AppFailure, Unit>> updateShift(SnapperShift? shift) async {
     try {
       if (shift != null) {
         await firestore.collection("shifts").doc(shift.id).set(
@@ -46,13 +48,14 @@ class SnapperShiftRepo {
               SetOptions(merge: true),
             );
       }
+      return const Right(unit);
     } catch (e) {
       logger.e(e.toString());
-      throw Exception(e);
+      return Left(AppFailure(e.toString()));
     }
   }
 
-  Future<String?> uploadMedia(
+  Future<Either<AppFailure, String?>> uploadMedia(
     File file, {
     required bool isVideo,
     required String shiftId,
@@ -62,6 +65,7 @@ class SnapperShiftRepo {
       String filePath =
           "uploads/${isVideo ? "videos" : "images"}/$shiftId/${snapperShiftPhotoType.text}";
       Reference ref = firebaseStorage.ref().child(filePath);
+
       UploadTask uploadTask = ref.putFile(file);
       uploadTask.snapshotEvents.listen(
         (snapshot) {
@@ -74,20 +78,23 @@ class SnapperShiftRepo {
         () => null,
       );
       String downloadUrl = await ref.getDownloadURL();
-      return downloadUrl;
+
+      return Right(downloadUrl);
     } catch (e) {
       logger.e("Error uploading media: $e");
-      throw Exception(e);
+      return Left(AppFailure("Error uploading media: $e"));
     }
   }
 
-  Future<SnapperShift?> getShift(String id) async {
+  Future<Either<AppFailure, SnapperShift?>> getShift(String id) async {
     try {
       final shiftData = await firestore.collection("shifts").doc(id).get();
       final shift = shiftData.data();
-      return shift != null ? ShiftModel.fromJson(shift) as SnapperShift? : null;
+      final res =
+          shift != null ? ShiftModel.fromJson(shift) as SnapperShift? : null;
+      return Right(res);
     } catch (e) {
-     throw Exception(e);
+      return Left(AppFailure("$e"));
     }
   }
 }

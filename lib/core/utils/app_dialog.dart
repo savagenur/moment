@@ -4,6 +4,38 @@ import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:moment/features/app/theme/colors/app_colors.dart';
 
 class AppDialog {
+  static void showSuccess(String msg, {Duration duration = const Duration(seconds: 2)}) {
+    SmartDialog.showToast('',
+        displayTime: duration,
+        clickMaskDismiss: true,
+        builder: (context) => Padding(
+              padding: const EdgeInsets.only(top: 50, left: 20, right: 20),
+              child: Container(
+                decoration: const BoxDecoration(boxShadow: [
+                  BoxShadow(
+                    offset: Offset(0, 4),
+                    blurRadius: 10,
+                    spreadRadius: 3,
+                    color: Color.fromRGBO(26, 42, 97, 0.06),
+                  ),
+                ]),
+                child: Card(
+                  elevation: 0,
+                  child: ListTile(
+                    minLeadingWidth: 10,
+                    leading:  Icon(
+                      Icons.check_circle,
+                      color: appColorsLight.secondaryGreen,
+                      size: 30,
+                    ),
+                    title: Text(msg),
+                  ),
+                ),
+              ),
+            ),
+        alignment: Alignment.topLeft,
+        maskColor: Colors.transparent);
+  }
   static void showInfo(String msg, {Duration duration = const Duration(seconds: 2)}) {
     SmartDialog.showToast('',
         displayTime: duration,

@@ -1,13 +1,12 @@
 import 'dart:async';
-import 'dart:developer';
 import 'dart:io';
 
-import 'package:moment/core/enums/snapper_shift_photo_type.dart';
+import 'package:fpdart/fpdart.dart';
+import 'package:moment/core/failure/failure.dart';
 import 'package:moment/core/utils/utils.dart';
 import 'package:moment/features/app/injection_container.dart';
 import 'package:moment/features/photo/models/photo/photo_model.dart';
 import 'package:moment/features/shift/models/shift/shift_model.dart';
-import 'package:moment/features/shift/models/shift_start/shift_start_model.dart';
 import 'package:moment/features/shift/repos/snapper_shift_repo.dart';
 import 'package:moment/features/shift/view_models/snapper/state/snapper_shift_state.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -27,7 +26,7 @@ class SnapperShiftViewModel extends _$SnapperShiftViewModel {
       activeShifts.cancel();
       inactiveShifts.cancel();
     });
-    return SnapperShiftState();
+    return const SnapperShiftState();
   }
 
   StreamSubscription<List<ShiftModel>> onActiveShiftListener() {
@@ -35,8 +34,6 @@ class SnapperShiftViewModel extends _$SnapperShiftViewModel {
 
     return activeShiftsStream.listen((activeShifts) {
       state = state.copyWith(activeShifts: AsyncValue.data(activeShifts));
-
-      // print(state.value?.inactiveShifts);
     }, onError: (e, stackTrace) {
       state = state.copyWith(
         activeShifts: AsyncValue.error(e, stackTrace),
@@ -48,8 +45,6 @@ class SnapperShiftViewModel extends _$SnapperShiftViewModel {
     final inactiveShiftStream = _shiftRepo.getSnapperShiftList(status: 0);
     return inactiveShiftStream.listen((inactiveShifts) {
       state = state.copyWith(inactiveShifts: AsyncValue.data(inactiveShifts));
-
-      // print(state.value?.inactiveShifts);
     }, onError: (e, stackTrace) {
       state = state.copyWith(
         inactiveShifts: AsyncValue.error(e, stackTrace),
@@ -61,36 +56,52 @@ class SnapperShiftViewModel extends _$SnapperShiftViewModel {
     state = state.copyWith(shift: AsyncValue.data(shift));
   }
 
-  /// Method to get the local shift from local storage
-  Future<void> getShift(String id) async {
-    try {
-      final shift = await _shiftRepo.getShift(id);
-      if (shift != null) {
+  Future<Either<AppFailure, Unit>> getShift(String id) async {
+    final res = await _shiftRepo.getShift(id);
+    return res.fold(
+      (l) {
+        state = state.copyWith(
+            shift: AsyncValue.error(l.message, StackTrace.current));
+        return Left(AppFailure(l.message));
+      },
+      (shift) {
+        if (shift != null) {
+          setShift(shift);
+        }
+        return const Right(unit);
+      },
+    );
+  }
+
+  Future<Either<AppFailure, Unit>> updateShift(SnapperShift? shift) async {
+    final res = await _shiftRepo.updateShift(shift);
+    return res.fold(
+      (l) {
+        logger.e(l.message);
+        return Left(AppFailure(l.message));
+      },
+      (r) {
         setShift(shift);
-      }
-    } catch (e) {
-      state = state.copyWith(shift: AsyncValue.error(e, StackTrace.current));
-    }
+        return const Right(unit);
+      },
+    );
   }
 
-  Future<void> updateShift(SnapperShift? shift) async {
-    try {
-      await _shiftRepo.updateShift(shift);
-      setShift(shift);
-    } catch (e) {
-      logger.e(e);
-      throw Exception(e);
-    }
-  }
-
-  Future<void> uploadMedia(
+  Future<Either<AppFailure, Unit>> uploadMedia(
     File file, {
     required PhotoModel newPhoto,
     required SnapperShift? shift,
-    required bool isVideo,
+     bool isVideo = false,
   }) async {
-    try {
-      setShift(shift?.copyWith(
+    if (shift == null) {
+      logger.e("Shift is null; cannot upload media.");
+      return Left(AppFailure(
+          "Shift is null; cannot upload media.")); // Early exit if shift is null
+    }
+
+    // Update state to indicate that the media is being uploaded
+    setShift(
+      shift.copyWith(
         shiftStart: shift.shiftStart.updateShiftStartPhoto(
           newPhoto.photoType,
           newPhoto: newPhoto.copyWith(
@@ -98,35 +109,62 @@ class SnapperShiftViewModel extends _$SnapperShiftViewModel {
             hasError: false,
           ),
         )!,
-      ));
-      final imageUrl = await _shiftRepo.uploadMedia(
-        file,
-        isVideo: isVideo,
-        shiftId: newPhoto.shiftId!,
-        snapperShiftPhotoType: newPhoto.photoType,
-      );
-      final updatedShift = shift?.copyWith(
-        shiftStart: shift.shiftStart.updateShiftStartPhoto(
-          newPhoto.photoType,
-          newPhoto: newPhoto.copyWith(
-            imageUrl: imageUrl,
-            isLoading: false,
-            hasError: false,
-          ),
-        )!,
-      );
-      await _shiftRepo.updateShift(updatedShift);
-    } catch (e) {
-      setShift(shift?.copyWith(
-        shiftStart: shift.shiftStart.updateShiftStartPhoto(
-          newPhoto.photoType,
-          newPhoto: newPhoto.copyWith(
-            isLoading: false,
-            hasError: true,
-          ),
-        )!,
-      ));
-      logger.e(e);
-    }
+      ),
+    );
+
+    // Attempt to upload the media file
+    final uploadResult = await _shiftRepo.uploadMedia(
+      file,
+      isVideo: isVideo,
+      shiftId: newPhoto.shiftId!,
+      snapperShiftPhotoType: newPhoto.photoType,
+    );
+
+    // Handle the result of the media upload
+    return await uploadResult.fold(
+      (failure) => _handleUploadMediaError(failure.message, shift, newPhoto),
+      (imageUrl) async {
+        // Create an updated shift with the new image URL
+        final updatedShift = shift.copyWith(
+          shiftStart: shift.shiftStart.updateShiftStartPhoto(
+            newPhoto.photoType,
+            newPhoto: newPhoto.copyWith(
+              imageUrl: imageUrl,
+              isLoading: false,
+              hasError: false,
+            ),
+          )!,
+        );
+
+        // Attempt to update the shift with the new media details
+        final updateRes = await _shiftRepo.updateShift(updatedShift);
+
+        // Handle the result of the shift update
+        return updateRes.fold(
+          (failure) =>
+              _handleUploadMediaError(failure.message, shift, newPhoto),
+          (_) {
+            setShift(updatedShift);
+            return const Right(unit);
+          },
+        );
+      },
+    );
+  }
+
+  Left<AppFailure, Unit> _handleUploadMediaError(
+      String e, SnapperShift? shift, PhotoModel newPhoto) {
+    logger.e(e);
+
+    setShift(shift?.copyWith(
+      shiftStart: shift.shiftStart.updateShiftStartPhoto(
+        newPhoto.photoType,
+        newPhoto: newPhoto.copyWith(
+          isLoading: false,
+          hasError: true,
+        ),
+      )!,
+    ));
+    return Left(AppFailure(e));
   }
 }

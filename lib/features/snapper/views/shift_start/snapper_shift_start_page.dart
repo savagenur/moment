@@ -10,6 +10,7 @@ import 'package:moment/core/constants/design_dimensions.dart';
 import 'package:moment/core/enums/snapper_shift_photo_type.dart';
 import 'package:moment/core/extensions/build_context_extension.dart';
 import 'package:moment/core/extensions/to_double_extension.dart';
+import 'package:moment/core/utils/app_dialog.dart';
 import 'package:moment/features/app/routes/app_router.gr.dart';
 import 'package:moment/features/photo/models/photo/photo_model.dart';
 import 'package:moment/features/photo/repos/photo_repo.dart';
@@ -164,14 +165,14 @@ class SnapperShiftStartPage extends HookConsumerWidget {
   Widget buildStatus(BuildContext context, SnapperShift? shift) {
     return shift?.shiftStart.isCompleted ?? false
         ? ShiftStatusWidget(
-          title: "Completed",
-          backgroundColor: context.colors.secondaryGreen,
-        )
-        :ShiftStatusWidget(
-          title: "Incomplete",
-          titleColor: Colors.black,
-          backgroundColor: context.colors.primaryYellow,
-        ) ;
+            title: "Completed",
+            backgroundColor: context.colors.secondaryGreen,
+          )
+        : ShiftStatusWidget(
+            title: "Incomplete",
+            titleColor: Colors.black,
+            backgroundColor: context.colors.primaryYellow,
+          );
   }
 
 // Function to handle successful submission
@@ -191,27 +192,34 @@ class SnapperShiftStartPage extends HookConsumerWidget {
     required PhotoType photoType,
   }) async {
     final file = await PhotoRepo.takePhoto(ImageSource.camera);
-    if (file != null) {
-      PhotoModel? newPhoto = getPhotoModel(shift, file, photoType);
+    if (file == null) return;
+    PhotoModel? newPhoto = getPhotoModel(shift, file, photoType);
 
-      final updatedShift = shift?.copyWith(
-        updatedAt: DateTime.now(),
-        shiftStart: shift.shiftStart
-            .updateShiftStartPhoto(
-              photoType,
-              newPhoto: newPhoto,
-            )!
-            .copyWith(
-              updatedAt: DateTime.now(),
-            ),
-      );
-      shiftViewModelNotifier.uploadMedia(
-        file,
-        newPhoto: newPhoto,
-        shift: updatedShift,
-        isVideo: false,
-      );
-    }
+    final updatedShift = shift?.copyWith(
+      updatedAt: DateTime.now(),
+      shiftStart: shift.shiftStart
+          .updateShiftStartPhoto(
+            photoType,
+            newPhoto: newPhoto,
+          )!
+          .copyWith(
+            updatedAt: DateTime.now(),
+          ),
+    );
+    shiftViewModelNotifier
+        .uploadMedia(
+      file,
+      newPhoto: newPhoto,
+      shift: updatedShift,
+    )
+        .then(
+      (res) {
+        res.fold(
+          (l) => AppDialog.showError(l.message),
+          (r) => AppDialog.showSuccess("Successfully uploaded"),
+        );
+      },
+    );
   }
 
   PhotoModel getPhotoModel(
@@ -234,7 +242,10 @@ class ShiftStatusWidget extends StatelessWidget {
   final Color titleColor;
   final Color backgroundColor;
   const ShiftStatusWidget({
-    super.key, required this.title, required this.backgroundColor, this.titleColor = Colors.white,
+    super.key,
+    required this.title,
+    required this.backgroundColor,
+    this.titleColor = Colors.white,
   });
 
   @override

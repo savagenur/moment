@@ -7,7 +7,7 @@ import 'package:moment/core/utils/utils.dart';
 import 'package:moment/features/auth/models/user/user_model.dart';
 
 class AuthRepo {
-  Future<void> createUserWithEmailAndPassword(
+  Future<Either<AppFailure, Unit>> createUserWithEmailAndPassword(
       String email, String password) async {
     try {
       await firebaseAuth.createUserWithEmailAndPassword(
@@ -24,8 +24,9 @@ class AuthRepo {
       await firestore.collection("users").doc(getUserId).set(
             user.toJson(),
           );
+      return const Right(unit);
     } catch (e) {
-      logger.e('Error: $e');
+      return Left(AppFailure(e.toString()));
     }
   }
 
@@ -59,16 +60,17 @@ class AuthRepo {
       );
     } on FirebaseAuthException catch (e) {
       return Left(
-        AppFailure(
-          message: e.message,
-        ),
+        AppFailure(e.toString()),
       );
     }
   }
 
-  Future<void> signOut() async {
+  Future<Either<AppFailure, Unit>> signOut() async {
     try {
       await firebaseAuth.signOut();
-    } catch (_) {}
+      return const Right(unit);
+    } catch (e) {
+      return Left(AppFailure(e.toString()));
+    }
   }
 }
