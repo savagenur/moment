@@ -9,6 +9,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:moment/core/constants/design_dimensions.dart';
 import 'package:moment/core/extensions/to_double_extension.dart';
+import 'package:moment/core/utils/utils.dart';
 import 'package:moment/features/app/widgets/primary_button.dart';
 import 'package:moment/features/shift/models/shift/shift_model.dart';
 import 'package:moment/features/shift/models/start_report/start_report_model.dart';
@@ -45,47 +46,57 @@ class SnapperShiftStartReportPage extends HookConsumerWidget {
     useEffect(
       () {
         void updateShift() {
-          if (debounce?.isActive ?? false) debounce!.cancel();
-          debounce = Timer(const Duration(milliseconds: 800), () {
-            shiftViewModelNotifier.updateShift(
-              snapperShift.copyWith(
-                shiftStart: snapperShift.shiftStart.copyWith(
-                  startReport: SnapperStartReport(
-                    startFrames: textToIntConverter(framesController),
-                    startBrokenFrames:
-                        textToIntConverter(brokenFramesController),
-                    startPaperSets: textToIntConverter(paperSetsController),
-                    startBrokenPaperSets:
-                        textToIntConverter(brokenPaperSetsController),
-                    startPrints: textToIntConverter(startPrintsController),
-                  ),
+          shiftViewModelNotifier.updateShift(
+            snapperShift.copyWith(
+              shiftStart: snapperShift.shiftStart.copyWith(
+                startReport: SnapperStartReport(
+                  startFrames: textToIntConverter(framesController),
+                  startBrokenFrames: textToIntConverter(brokenFramesController),
+                  startPaperSets: textToIntConverter(paperSetsController),
+                  startBrokenPaperSets:
+                      textToIntConverter(brokenPaperSetsController),
+                  startPrints: textToIntConverter(startPrintsController),
                 ),
               ),
-            );
+            ),
+          );
+        }
+
+        void updateShiftTimer() {
+          if (debounce?.isActive ?? false) debounce!.cancel();
+          debounce = Timer(const Duration(milliseconds: 2000), () {
+            updateShift();
           });
         }
 
         // Add listeners to each controller to trigger the update function
-        framesController.addListener(updateShift);
-        brokenFramesController.addListener(updateShift);
-        paperSetsController.addListener(updateShift);
-        brokenPaperSetsController.addListener(updateShift);
-        startPrintsController.addListener(updateShift);
+        framesController.addListener(updateShiftTimer);
+        brokenFramesController.addListener(updateShiftTimer);
+        paperSetsController.addListener(updateShiftTimer);
+        brokenPaperSetsController.addListener(updateShiftTimer);
+        startPrintsController.addListener(updateShiftTimer);
 
         // Cleanup listeners when the widget is disposed
         return () {
           if (debounce?.isActive ?? false) {
             debounce!.cancel();
             updateShift(); // Ensures the last update is made before disposal
-            framesController.removeListener(updateShift);
-            brokenFramesController.removeListener(updateShift);
-            paperSetsController.removeListener(updateShift);
-            brokenPaperSetsController.removeListener(updateShift);
-            startPrintsController.removeListener(updateShift);
           }
+          framesController.removeListener(updateShiftTimer);
+          brokenFramesController.removeListener(updateShiftTimer);
+          paperSetsController.removeListener(updateShiftTimer);
+          brokenPaperSetsController.removeListener(updateShiftTimer);
+          startPrintsController.removeListener(updateShiftTimer);
         };
       },
-      [],
+      [
+        // framesController,
+        // brokenFramesController,
+        // paperSetsController,
+        // brokenPaperSetsController,
+        // startPrintsController,
+        // snapperShift,
+      ],
     );
 
     return Scaffold(

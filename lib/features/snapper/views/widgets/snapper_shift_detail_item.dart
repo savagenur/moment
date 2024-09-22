@@ -1,9 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:moment/core/constants/design_dimensions.dart';
+import 'package:moment/core/converters/date_time_converter.dart';
 import 'package:moment/core/enums/snapper_shift_photo_type.dart';
 import 'package:moment/core/extensions/build_context_extension.dart';
+import 'package:moment/core/extensions/to_double_extension.dart';
 import 'package:moment/features/app/widgets/loader.dart';
 import 'package:moment/features/shift/models/shift/shift_model.dart';
 
@@ -14,6 +17,7 @@ class SnapperShiftDetailItem extends ConsumerWidget {
   final SnapperShift? shift;
   final PhotoType shiftPhotoType;
   final VoidCallback? onTap;
+  final VoidCallback? onImageTap;
   final Widget? trailing;
 
   const SnapperShiftDetailItem({
@@ -22,6 +26,7 @@ class SnapperShiftDetailItem extends ConsumerWidget {
     required this.title,
     this.date,
     this.onTap,
+    this.onImageTap,
     this.trailing,
     required this.shift,
     this.shiftPhotoType = PhotoType.none,
@@ -29,10 +34,11 @@ class SnapperShiftDetailItem extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final photo = shift?.shiftStart.getPhoto(shiftPhotoType);
     return ListTile(
       leading: Text(index),
       horizontalTitleGap: DDimension.smallPadding,
-      onTap: onTap ?? () {},
+      onTap: onTap,
       title: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -40,9 +46,9 @@ class SnapperShiftDetailItem extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(title),
-              if (date != null)
+              if (photo?.createdAt != null)
                 Text(
-                  date.toString(),
+                  DateTimeConverter.toTextTimeAndDate(photo!.createdAt!),
                   style: context.textTheme.bodySmall,
                 ),
             ],
@@ -52,14 +58,14 @@ class SnapperShiftDetailItem extends ConsumerWidget {
             height: 50,
             child: Stack(
               children: [
-                buildImage(),
-                if (shift?.shiftStart.getPhoto(shiftPhotoType)?.isLoading ?? false)
+                buildImage(context),
+                if (photo?.isLoading ?? false)
                   Positioned.fill(
                     child: Loader(
                       color: context.colors.primaryGreen,
                     ),
                   ),
-                if (shift?.shiftStart.getPhoto(shiftPhotoType)?.hasError ?? false)
+                if (photo?.hasError ?? false)
                   const Positioned.fill(
                     child: Icon(
                       Icons.error_outline,
@@ -75,15 +81,51 @@ class SnapperShiftDetailItem extends ConsumerWidget {
     );
   }
 
-  Widget buildImage() {
+  Widget buildImage(BuildContext context) {
     final latestPhoto = shift?.shiftStart.getPhoto(shiftPhotoType);
 
     if (latestPhoto?.imageUrl != null) {
-      return CachedNetworkImage(
-        imageUrl: latestPhoto!.imageUrl!,
-        width: 40,
-        height: 50,
-        fit: BoxFit.cover,
+      return GestureDetector(
+        onTap: () async {
+          await showMaterialModalBottomSheet(
+            context: context,
+            builder: (context) {
+              return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Padding(
+                      padding: DDimension.bigPadding.all,
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              title,
+                              style: context.textTheme.titleLarge,
+                            ),
+                          ),
+                          IconButton(
+                              onPressed: () => Navigator.pop(context),
+                              icon: const Icon(Icons.cancel_outlined))
+                        ],
+                      ),
+                    ),
+                    CachedNetworkImage(
+                      imageUrl: latestPhoto.imageUrl!,
+                    )
+                  ],
+                );
+            },
+          );
+        },
+        child: ClipRRect(
+          borderRadius: DDimension.mediumPadding.radius,
+          child: CachedNetworkImage(
+            imageUrl: latestPhoto!.imageUrl!,
+            width: 40,
+            height: 50,
+            fit: BoxFit.cover,
+          ),
+        ),
       );
     }
 

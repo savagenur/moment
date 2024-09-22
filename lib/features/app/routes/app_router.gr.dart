@@ -18,7 +18,7 @@ import 'package:moment/features/snapper/views/shift_end/snapper_shift_end_page.d
     as _i3;
 import 'package:moment/features/snapper/views/shift_start/snapper_shift_start_page.dart'
     as _i4;
-import 'package:moment/features/snapper/views/shift_start_report/snapper_shift_start_report_page.dart'
+import 'package:moment/features/snapper/views/shift_start/shift_start_report/snapper_shift_start_report_page.dart'
     as _i5;
 
 /// generated route for
