@@ -9,6 +9,7 @@ import 'package:moment/features/photo/models/photo/photo_model.dart';
 import 'package:moment/features/shift/models/shift/shift_model.dart';
 import 'package:moment/features/shift/repos/snapper_shift_repo.dart';
 import 'package:moment/features/shift/view_models/snapper/state/snapper_shift_state.dart';
+import 'package:queue/queue.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'snapper_shift_viewmodel.g.dart';
@@ -16,6 +17,7 @@ part 'snapper_shift_viewmodel.g.dart';
 @riverpod
 class SnapperShiftViewModel extends _$SnapperShiftViewModel {
   final SnapperShiftRepo _shiftRepo = sl<SnapperShiftRepo>();
+  final _queue = Queue(delay: const Duration(milliseconds: 10));
 
   @override
   SnapperShiftState build() {
@@ -90,70 +92,122 @@ class SnapperShiftViewModel extends _$SnapperShiftViewModel {
   Future<Either<AppFailure, Unit>> uploadMedia(
     File file, {
     required PhotoModel newPhoto,
-    required SnapperShift? shift,
-     bool isVideo = false,
+    bool isVideo = false,
   }) async {
-    if (shift == null) {
-      logger.e("Shift is null; cannot upload media.");
-      return Left(AppFailure(
-          "Shift is null; cannot upload media.")); // Early exit if shift is null
-    }
+    return await _queue.add(() async {
+      // Attempt to prepare the shift for media upload
+      final shift = _prepareShiftForUpload(newPhoto);
+      if (shift == null) {
+        return _shiftIsNullFailure();
+      }
 
-    // Update state to indicate that the media is being uploaded
-    setShift(
-      shift.copyWith(
-        shiftStart: shift.shiftStart.updateShiftStartPhoto(
-          newPhoto.photoType,
-          newPhoto: newPhoto.copyWith(
-            isLoading: true,
-            hasError: false,
-          ),
-        )!,
-      ),
-    );
+      // Early exit if another upload is already in progress
+      if (newPhoto.isLoading ?? false) {
+        return _uploadInProgressFailure();
+      }
 
-    // Attempt to upload the media file
-    final uploadResult = await _shiftRepo.uploadMedia(
-      file,
-      isVideo: isVideo,
-      shiftId: newPhoto.shiftId!,
-      snapperShiftPhotoType: newPhoto.photoType,
-    );
+      // Mark the photo as loading and update the shift state
+      _setShiftLoading(shift, newPhoto);
 
-    // Handle the result of the media upload
-    return await uploadResult.fold(
-      (failure) => _handleUploadMediaError(failure.message, shift, newPhoto),
-      (imageUrl) async {
-        // Create an updated shift with the new image URL
-        final updatedShift = shift.copyWith(
-          shiftStart: shift.shiftStart.updateShiftStartPhoto(
+      // Attempt to upload the media file
+      final uploadResult = await _shiftRepo.uploadMedia(
+        file,
+        isVideo: isVideo,
+        shiftId: newPhoto.shiftId!,
+        snapperShiftPhotoType: newPhoto.photoType,
+      );
+
+      // Handle the result of the media upload
+      return await uploadResult.fold(
+        (failure) => _handleUploadMediaError(failure.message, shift, newPhoto),
+        (imageUrl) async => await _handleSuccessfulUpload(
+          shift,
+          newPhoto,
+          imageUrl,
+        ),
+      );
+    });
+  }
+
+// Helper function to prepare the shift for upload
+  SnapperShift? _prepareShiftForUpload(PhotoModel newPhoto) {
+    final oldShift = state.shift?.value;
+    if (oldShift == null) return null;
+
+    return oldShift.copyWith(
+      updatedAt: DateTime.now(),
+      shiftStart: oldShift.shiftStart
+          .updateShiftStartPhoto(
             newPhoto.photoType,
-            newPhoto: newPhoto.copyWith(
-              imageUrl: imageUrl,
-              isLoading: false,
-              hasError: false,
-            ),
-          )!,
-        );
+            newPhoto: newPhoto,
+          )!
+          .copyWith(
+            updatedAt: DateTime.now(),
+          ),
+    );
+  }
 
-        // Attempt to update the shift with the new media details
-        final updateRes = await _shiftRepo.updateShift(updatedShift);
+// Handles the scenario where shift is null
+  Either<AppFailure, Unit> _shiftIsNullFailure() {
+    logger.e("Shift is null; cannot upload media.");
+    return Left(AppFailure("Shift is null; cannot upload media."));
+  }
 
-        // Handle the result of the shift update
-        return updateRes.fold(
-          (failure) =>
-              _handleUploadMediaError(failure.message, shift, newPhoto),
-          (_) {
-            setShift(updatedShift);
-            return const Right(unit);
-          },
-        );
+// Handles the scenario where another upload is already in progress
+  Either<AppFailure, Unit> _uploadInProgressFailure() {
+    logger.e("Upload already in progress for this photo type.");
+    return Left(AppFailure("Upload already in progress for this photo type."));
+  }
+
+// Sets the shift as loading before the upload starts
+  void _setShiftLoading(SnapperShift shift, PhotoModel newPhoto) {
+    final updatedShift = shift.copyWith(
+      shiftStart: shift.shiftStart.updateShiftStartPhoto(
+        newPhoto.photoType,
+        newPhoto: newPhoto.copyWith(
+          isLoading: true,
+          hasError: false,
+        ),
+      )!,
+    );
+    setShift(updatedShift);
+  }
+
+// Handles the successful upload scenario
+  Future<Either<AppFailure, Unit>> _handleSuccessfulUpload(
+    SnapperShift shift,
+    PhotoModel newPhoto,
+    String? imageUrl,
+  ) async {
+    final updatedShift = shift.copyWith(
+      shiftStart: shift.shiftStart.updateShiftStartPhoto(
+        newPhoto.photoType,
+        newPhoto: newPhoto.copyWith(
+          imageUrl: imageUrl,
+          isLoading: false,
+          hasError: false,
+        ),
+      )!,
+    );
+
+    // Attempt to update the shift with the new media details
+    final updateRes = await _shiftRepo.updateShift(updatedShift);
+
+    // Handle the result of the shift update
+    return updateRes.fold(
+      (failure) => _handleUploadMediaError(failure.message, shift, newPhoto),
+      (_) {
+        setShift(updatedShift);
+        return const Right(unit);
       },
     );
   }
 
   Left<AppFailure, Unit> _handleUploadMediaError(
-      String e, SnapperShift? shift, PhotoModel newPhoto) {
+    String e,
+    SnapperShift? shift,
+    PhotoModel newPhoto,
+  ) {
     logger.e(e);
 
     setShift(shift?.copyWith(

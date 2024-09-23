@@ -251,7 +251,6 @@ class SnapperShiftEndPage extends HookConsumerWidget {
         shiftViewModelNotifier.uploadMedia(
           file,
           newPhoto: newPhoto,
-          shift: newShift,
           isVideo: false,
         );
       }

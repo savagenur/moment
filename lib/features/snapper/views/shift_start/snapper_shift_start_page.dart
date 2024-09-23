@@ -191,26 +191,14 @@ class SnapperShiftStartPage extends HookConsumerWidget {
     SnapperShift? shift, {
     required PhotoType photoType,
   }) async {
-    final file = await PhotoRepo.takePhoto(ImageSource.camera);
+    final file = await PhotoRepo.takePhoto(ImageSource.gallery);
     if (file == null) return;
     PhotoModel? newPhoto = getPhotoModel(shift, file, photoType);
 
-    final updatedShift = shift?.copyWith(
-      updatedAt: DateTime.now(),
-      shiftStart: shift.shiftStart
-          .updateShiftStartPhoto(
-            photoType,
-            newPhoto: newPhoto,
-          )!
-          .copyWith(
-            updatedAt: DateTime.now(),
-          ),
-    );
     shiftViewModelNotifier
         .uploadMedia(
       file,
       newPhoto: newPhoto,
-      shift: updatedShift,
     )
         .then(
       (res) {

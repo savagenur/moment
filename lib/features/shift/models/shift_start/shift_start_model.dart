@@ -84,7 +84,7 @@ class ShiftStartModel with _$ShiftStartModel {
         PhotoType.startCamera => snapperShiftStart.startCameraPhoto,
         PhotoType.startLaptop => snapperShiftStart.startLaptopPhoto,
         PhotoType.startWires => snapperShiftStart.startWiresPhoto,
-        PhotoType.none => null,
+        _ => null,
       };
     }
     throw ArgumentError('Unsupported type: $runtimeType');
@@ -106,7 +106,7 @@ class ShiftStartModel with _$ShiftStartModel {
           snapperShiftStart.copyWith(startLaptopPhoto: newPhoto),
         PhotoType.startWires =>
           snapperShiftStart.copyWith(startWiresPhoto: newPhoto),
-        PhotoType.none => null,
+        _ => null,
       };
     }
     throw ArgumentError('Unsupported type: $runtimeType');

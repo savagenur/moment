@@ -1,12 +1,13 @@
-import 'package:moment/features/photo/models/photo/photo_model.dart';
-import 'package:moment/features/shift/models/shift/shift_model.dart';
-
 enum PhotoType {
   clothes("clothes"),
   startWorkPlace("startWorkPlace"),
   startCamera("startCamera"),
   startLaptop("startLaptop"),
   startWires("startWires"),
+  endWorkPlace("endWorkPlace"),
+  endCamera("endCamera"),
+  endLaptop("endLaptop"),
+  endWires("endWires"),
   none("none");
 
   final String text;
