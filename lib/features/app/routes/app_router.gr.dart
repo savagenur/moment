@@ -64,13 +64,13 @@ class SnapperNavigationRoute extends _i6.PageRouteInfo<void> {
 class SnapperShiftEndRoute extends _i6.PageRouteInfo<SnapperShiftEndRouteArgs> {
   SnapperShiftEndRoute({
     _i7.Key? key,
-    required _i8.ShiftModel shift,
+    required _i8.SnapperShift snapperShift,
     List<_i6.PageRouteInfo>? children,
   }) : super(
           SnapperShiftEndRoute.name,
           args: SnapperShiftEndRouteArgs(
             key: key,
-            shift: shift,
+            snapperShift: snapperShift,
           ),
           initialChildren: children,
         );
@@ -83,7 +83,7 @@ class SnapperShiftEndRoute extends _i6.PageRouteInfo<SnapperShiftEndRouteArgs> {
       final args = data.argsAs<SnapperShiftEndRouteArgs>();
       return _i3.SnapperShiftEndPage(
         key: args.key,
-        shift: args.shift,
+        snapperShift: args.snapperShift,
       );
     },
   );
@@ -92,16 +92,16 @@ class SnapperShiftEndRoute extends _i6.PageRouteInfo<SnapperShiftEndRouteArgs> {
 class SnapperShiftEndRouteArgs {
   const SnapperShiftEndRouteArgs({
     this.key,
-    required this.shift,
+    required this.snapperShift,
   });
 
   final _i7.Key? key;
 
-  final _i8.ShiftModel shift;
+  final _i8.SnapperShift snapperShift;
 
   @override
   String toString() {
-    return 'SnapperShiftEndRouteArgs{key: $key, shift: $shift}';
+    return 'SnapperShiftEndRouteArgs{key: $key, snapperShift: $snapperShift}';
   }
 }
 

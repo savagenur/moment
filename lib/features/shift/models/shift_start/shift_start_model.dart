@@ -79,7 +79,7 @@ class ShiftStartModel with _$ShiftStartModel {
     if (this is SnapperShiftStart) {
       final snapperShiftStart = this as SnapperShiftStart;
       return switch (photoType) {
-        PhotoType.clothes => snapperShiftStart.clothesPhoto,
+        PhotoType.startClothes => snapperShiftStart.clothesPhoto,
         PhotoType.startWorkPlace => snapperShiftStart.startWorkPlacePhoto,
         PhotoType.startCamera => snapperShiftStart.startCameraPhoto,
         PhotoType.startLaptop => snapperShiftStart.startLaptopPhoto,
@@ -97,7 +97,8 @@ class ShiftStartModel with _$ShiftStartModel {
     if (this is SnapperShiftStart) {
       final snapperShiftStart = this as SnapperShiftStart;
       return switch (photoType) {
-        PhotoType.clothes => snapperShiftStart.copyWith(clothesPhoto: newPhoto),
+        PhotoType.startClothes =>
+          snapperShiftStart.copyWith(clothesPhoto: newPhoto),
         PhotoType.startWorkPlace =>
           snapperShiftStart.copyWith(startWorkPlacePhoto: newPhoto),
         PhotoType.startCamera =>

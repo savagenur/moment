@@ -49,7 +49,7 @@ class SnapperShiftStartPage extends HookConsumerWidget {
         child: Column(
           children: [
             SnapperShiftDetailItem(
-              shiftPhotoType: PhotoType.clothes,
+              shiftPhotoType: PhotoType.startClothes,
               index: "1",
               title: "Clothes Photo",
               shift: shift,
@@ -57,7 +57,7 @@ class SnapperShiftStartPage extends HookConsumerWidget {
                   onPressed: () => _addPhoto(
                         shiftViewModelNotifier,
                         shift,
-                        photoType: PhotoType.clothes,
+                        photoType: PhotoType.startClothes,
                       ),
                   icon: Icon(
                     Icons.camera_alt_outlined,

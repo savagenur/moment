@@ -46,7 +46,7 @@ class SnapperShiftStartReportPage extends HookConsumerWidget {
     useEffect(
       () {
         void updateShift() {
-          shiftViewModelNotifier.updateShift(
+          shiftViewModelNotifier.updateShiftStartReport(
             snapperShift.copyWith(
               shiftStart: snapperShift.shiftStart.copyWith(
                 startReport: SnapperStartReport(

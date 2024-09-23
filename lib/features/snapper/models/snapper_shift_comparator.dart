@@ -16,7 +16,7 @@ class SnapperShiftComparator extends DataSourceComparator<SnapperShift> {
 
   PhotoModel? getLatestPhoto(PhotoType shiftPhotoType) {
     PhotoModel? getPhoto(SnapperShift? shift) => switch (shiftPhotoType) {
-          PhotoType.clothes => shift?.shiftStart.clothesPhoto,
+          PhotoType.startClothes => shift?.shiftStart.clothesPhoto,
           PhotoType.startWorkPlace => shift?.shiftStart.startWorkPlacePhoto,
           PhotoType.startCamera => shift?.shiftStart.startCameraPhoto,
           PhotoType.startLaptop => shift?.shiftStart.startLaptopPhoto,

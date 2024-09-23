@@ -55,6 +55,20 @@ class SnapperShiftRepo {
     }
   }
 
+  Future<Either<AppFailure, Unit>> updateShiftStartReport(SnapperShift? shift) async {
+  try {
+    if (shift != null) {
+      await firestore.collection("shifts").doc(shift.id).update({
+        "shiftStart.startReport": shift.shiftStart.startReport.toJson(),
+      });
+    }
+    return const Right(unit);
+  } catch (e) {
+    logger.e(e.toString());
+    return Left(AppFailure(e.toString()));
+  }
+}
+
   Future<Either<AppFailure, String?>> uploadMedia(
     File file, {
     required bool isVideo,
@@ -63,7 +77,7 @@ class SnapperShiftRepo {
   }) async {
     try {
       String filePath =
-          "uploads/${isVideo ? "videos" : "images"}/$shiftId/${snapperShiftPhotoType.text}";
+          "uploads/${isVideo ? "videos" : "images"}/$shiftId/${snapperShiftPhotoType.name}";
       Reference ref = firebaseStorage.ref().child(filePath);
 
       UploadTask uploadTask = ref.putFile(file);

@@ -1,6 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:moment/core/enums/snapper_shift_photo_type.dart';
 import 'package:moment/features/photo/models/photo/photo_model.dart';
+import 'package:moment/features/shift/models/end_report/end_report_model.dart';
 
 part 'shift_end_model.freezed.dart';
 part 'shift_end_model.g.dart';
@@ -25,7 +26,11 @@ class ShiftEndModel with _$ShiftEndModel {
     final PhotoModel? endCameraPhoto,
     final PhotoModel? endLaptopPhoto,
     final PhotoModel? endWiresPhoto,
-    // @Default(SnapperEndReport()) final SnapperEndReport endReport,
+    final PhotoModel? endLockPhoto,
+    final PhotoModel? endBoxesPhoto,
+    final PhotoModel? endPrintsPhoto,
+    final PhotoModel? endGoogleDrivePhoto,
+    required final SnapperEndReport endReport,
   }) = SnapperShiftEnd;
 
   @Implements<BaseShiftEndModel>()
@@ -42,8 +47,19 @@ class ShiftEndModel with _$ShiftEndModel {
 
   bool get isCompleted {
     return when(
-      snapper: (id, shiftId, createdAt, updatedAt, endWorkPlacePhoto,
-          endCameraPhoto, endLaptopPhoto, endWiresPhoto) {
+      snapper: (id,
+          shiftId,
+          createdAt,
+          updatedAt,
+          endWorkPlacePhoto,
+          endCameraPhoto,
+          endLaptopPhoto,
+          endWiresPhoto,
+          endLockPhoto,
+          endBoxesPhoto,
+          endPrintsPhoto,
+          endGoogleDrivePhoto,
+          endReport) {
         return false;
       },
       assistant: (id, shiftId, createdAt, updatedAt) {
@@ -62,6 +78,10 @@ class ShiftEndModel with _$ShiftEndModel {
         PhotoType.endCamera => snapperShiftEnd.endCameraPhoto,
         PhotoType.endLaptop => snapperShiftEnd.endLaptopPhoto,
         PhotoType.endWires => snapperShiftEnd.endWiresPhoto,
+        PhotoType.endLock => snapperShiftEnd.endLockPhoto,
+        PhotoType.endBoxes => snapperShiftEnd.endBoxesPhoto,
+        PhotoType.endPrints => snapperShiftEnd.endPrintsPhoto,
+        PhotoType.endGoogleDrive => snapperShiftEnd.endGoogleDrivePhoto,
         _ => null,
       };
     }

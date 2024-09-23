@@ -78,7 +78,7 @@ class SnapperShiftPage extends HookConsumerWidget {
                         )),
               ListTile(
                 onTap: () =>
-                    context.pushRoute(SnapperShiftEndRoute(shift: activeShift)),
+                    context.pushRoute(SnapperShiftEndRoute(snapperShift: activeShift)),
                 title: Text("End"),
                 trailing: activeShift.shiftStart.isCompleted
                       ? ShiftStatusWidget(

@@ -1,16 +1,20 @@
 enum PhotoType {
-  clothes("clothes"),
-  startWorkPlace("startWorkPlace"),
-  startCamera("startCamera"),
-  startLaptop("startLaptop"),
-  startWires("startWires"),
-  endWorkPlace("endWorkPlace"),
-  endCamera("endCamera"),
-  endLaptop("endLaptop"),
-  endWires("endWires"),
-  none("none");
+  startClothes,
+  startWorkPlace,
+  startCamera,
+  startLaptop,
+  startWires,
+  endWorkPlace,
+  endCamera,
+  endLaptop,
+  endWires,
+  endLock,
+  endBoxes,
+  endPrints,
+  endGoogleDrive,
+  none;
 
-  final String text;
+  // final String text;
 
-  const PhotoType(this.text);
+  // const PhotoType(this.text);
 }

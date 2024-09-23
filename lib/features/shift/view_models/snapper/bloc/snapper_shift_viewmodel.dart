@@ -88,6 +88,19 @@ class SnapperShiftViewModel extends _$SnapperShiftViewModel {
       },
     );
   }
+  Future<Either<AppFailure, Unit>> updateShiftStartReport(SnapperShift? shift) async {
+    final res = await _shiftRepo.updateShiftStartReport(shift);
+    return res.fold(
+      (l) {
+        logger.e(l.message);
+        return Left(AppFailure(l.message));
+      },
+      (r) {
+        setShift(shift);
+        return const Right(unit);
+      },
+    );
+  }
 
   Future<Either<AppFailure, Unit>> uploadMedia(
     File file, {
