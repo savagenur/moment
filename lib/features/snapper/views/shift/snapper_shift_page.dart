@@ -4,6 +4,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:moment/core/converters/date_time_converter.dart';
 import 'package:moment/core/extensions/build_context_extension.dart';
+import 'package:moment/features/app/constants/constants.dart';
 import 'package:moment/features/app/routes/app_router.gr.dart';
 import 'package:moment/features/shift/models/shift/shift_model.dart';
 import 'package:moment/features/shift/view_models/snapper/bloc/snapper_shift_viewmodel.dart';
@@ -69,12 +70,12 @@ class SnapperShiftPage extends HookConsumerWidget {
                   trailing: activeShift.shiftStart.isCompleted
                       ? ShiftStatusWidget(
                           title: "Completed",
-                          backgroundColor: context.colors.secondaryGreen,
+                          backgroundColor: completeColor,
                         )
                       : ShiftStatusWidget(
                           title: "Incomplete",
                           titleColor: Colors.black,
-                          backgroundColor: context.colors.primaryYellow,
+                          backgroundColor: inProcessColor,
                         )),
               ListTile(
                 onTap: () =>
@@ -83,12 +84,12 @@ class SnapperShiftPage extends HookConsumerWidget {
                 trailing: activeShift.shiftStart.isCompleted
                       ? ShiftStatusWidget(
                           title: "Completed",
-                          backgroundColor: context.colors.secondaryGreen,
+                          backgroundColor: completeColor,
                         )
                       : ShiftStatusWidget(
                           title: "Incomplete",
                           titleColor: Colors.black,
-                          backgroundColor: context.colors.primaryYellow,
+                          backgroundColor: inProcessColor,
                         ),
               ),
             ],

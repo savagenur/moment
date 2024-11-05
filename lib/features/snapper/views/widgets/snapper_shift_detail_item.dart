@@ -62,7 +62,7 @@ class SnapperShiftDetailItem extends ConsumerWidget {
                 if (photo?.isLoading ?? false)
                   Positioned.fill(
                     child: Loader(
-                      color: context.colors.primaryGreen,
+                      color: context.colors.primaryColor,
                     ),
                   ),
                 if (photo?.hasError ?? false)

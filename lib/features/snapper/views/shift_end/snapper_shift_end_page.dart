@@ -11,6 +11,7 @@ import 'package:moment/core/enums/snapper_shift_photo_type.dart';
 import 'package:moment/core/extensions/build_context_extension.dart';
 import 'package:moment/core/extensions/to_double_extension.dart';
 import 'package:moment/core/utils/app_dialog.dart';
+import 'package:moment/features/app/constants/constants.dart';
 import 'package:moment/features/app/routes/app_router.gr.dart';
 import 'package:moment/features/photo/models/photo/photo_model.dart';
 import 'package:moment/features/photo/repos/photo_repo.dart';
@@ -61,7 +62,7 @@ class SnapperShiftEndPage extends HookConsumerWidget {
                       ),
                   icon: Icon(
                     Icons.camera_alt_outlined,
-                    color: context.colors.primaryGreen,
+                    color: context.colors.primaryColor,
                   )),
             ),
             SnapperShiftDetailItem(
@@ -77,7 +78,7 @@ class SnapperShiftEndPage extends HookConsumerWidget {
                       ),
                   icon: Icon(
                     Icons.camera_alt_outlined,
-                    color: context.colors.primaryGreen,
+                    color: context.colors.primaryColor,
                   )),
             ),
             SnapperShiftDetailItem(
@@ -93,7 +94,7 @@ class SnapperShiftEndPage extends HookConsumerWidget {
                       ),
                   icon: Icon(
                     Icons.camera_alt_outlined,
-                    color: context.colors.primaryGreen,
+                    color: context.colors.primaryColor,
                   )),
             ),
             SnapperShiftDetailItem(
@@ -109,7 +110,7 @@ class SnapperShiftEndPage extends HookConsumerWidget {
                       ),
                   icon: Icon(
                     Icons.camera_alt_outlined,
-                    color: context.colors.primaryGreen,
+                    color: context.colors.primaryColor,
                   )),
             ),
             SnapperShiftDetailItem(
@@ -125,22 +126,22 @@ class SnapperShiftEndPage extends HookConsumerWidget {
                       ),
                   icon: Icon(
                     Icons.camera_alt_outlined,
-                    color: context.colors.primaryGreen,
+                    color: context.colors.primaryColor,
                   )),
             ),
-            Divider(),
+            const Divider(),
             SnapperShiftDetailItem(
               shiftPhotoType: PhotoType.none,
               shift: shift,
               index: "6",
-              title: "Shift start report",
-              onTap: () => context.pushRoute(SnapperShiftStartReportRoute(
+              title: "Shift end report",
+              onTap: () => context.pushRoute(SnapperShiftEndReportRoute(
                 snapperShift: shift!,
               )),
               trailing: _isStartReportCompleted((shift?.shiftStart))
                   ? Icon(
                       Icons.checklist_rtl,
-                      color: context.colors.secondaryGreen,
+                      color: context.colors.primaryColor,
                     )
                   : Icon(
                       Icons.list,
@@ -166,12 +167,12 @@ class SnapperShiftEndPage extends HookConsumerWidget {
     return shift?.shiftStart.isCompleted ?? false
         ? ShiftStatusWidget(
             title: "Completed",
-            backgroundColor: context.colors.secondaryGreen,
+            backgroundColor: completeColor,
           )
         : ShiftStatusWidget(
             title: "Incomplete",
             titleColor: Colors.black,
-            backgroundColor: context.colors.primaryYellow,
+            backgroundColor: inProcessColor,
           );
   }
 

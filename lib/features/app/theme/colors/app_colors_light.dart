@@ -3,6 +3,24 @@ import 'package:moment/features/app/theme/colors/app_colors.dart';
 
 class AppColorsLight implements AppColors {
   @override
+  Color get primaryColor => const Color(0xFF1E1E1E);
+  @override
+  Color get primaryLight => const Color(0xFF2A2A2A);
+  @override
+  Color get primaryDark => const Color(0xFF0C0C0C);
+  @override
+  Color get secondaryColor => const Color(0xFFF4F4F9);
+  @override
+  Color get secondaryLight => const Color(0xFFFFFFFF);
+  @override
+  Color get secondaryDark => const Color(0xFFE0E0E0);
+  @override
+  Color get surfaceColor => const Color(0xFFF4F4F4);
+  @override
+  Color get surfaceLight => const Color(0xFFFFFFFF);
+  @override
+  Color get surfaceDark => const Color(0xFFD9D9D9);
+  @override
   Color get black => Colors.black;
   @override
   Color get white => Colors.white;

@@ -1,5 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:moment/features/photo/models/photo/photo_model.dart';
+import 'package:moment/features/shift/models/shift_end/shift_end_model.dart';
 import 'package:moment/features/shift/models/shift_start/shift_start_model.dart';
 
 part 'shift_model.freezed.dart';
@@ -64,6 +65,7 @@ sealed class ShiftModel with _$ShiftModel {
     final DateTime? endTime,
     required final int? status,
     @Default(SnapperShiftStart()) final SnapperShiftStart shiftStart,
+    required final SnapperShiftEnd shiftEnd,
   }) = SnapperShift;
 
   factory ShiftModel.fromJson(Map<String, dynamic> json) =>

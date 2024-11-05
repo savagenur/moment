@@ -24,6 +24,9 @@ class AppRouter extends RootStackRouter {
           page: SnapperShiftStartReportRoute.page,
         ),
         AutoRoute(
+          page: SnapperShiftEndReportRoute.page,
+        ),
+        AutoRoute(
           page: SnapperShiftEndRoute.page,
         ),
       ];

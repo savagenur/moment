@@ -99,7 +99,7 @@ class SignInPage extends HookConsumerWidget {
               predicate: (route) => false,
             );
             isLoading.value = false;
-            AppDialog.showInfo("Successfully signed in!");
+            AppDialog.showSuccess("Successfully signed in!");
           },
           error: (error, _) {
             AppDialog.showError(error.toString());

@@ -10,6 +10,8 @@ extension ToDoubleExtension on double {
   EdgeInsets get all => EdgeInsets.all(this);
   EdgeInsets get right => EdgeInsets.only(right: this);
   EdgeInsets get left => EdgeInsets.only(left: this);
+  EdgeInsets get top => EdgeInsets.only(top: this);
+  EdgeInsets get bottom => EdgeInsets.only(bottom: this);
   EdgeInsets get vertical => EdgeInsets.symmetric(vertical: this);
   EdgeInsets get horizontal => EdgeInsets.symmetric(horizontal: this);
 

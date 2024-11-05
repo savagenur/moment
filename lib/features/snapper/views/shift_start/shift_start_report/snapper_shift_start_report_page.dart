@@ -1,16 +1,12 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'dart:async';
-
 import 'package:auto_route/auto_route.dart';
+import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-
 import 'package:moment/core/constants/design_dimensions.dart';
 import 'package:moment/core/extensions/to_double_extension.dart';
-import 'package:moment/core/utils/utils.dart';
-import 'package:moment/features/app/widgets/primary_button.dart';
 import 'package:moment/features/shift/models/shift/shift_model.dart';
 import 'package:moment/features/shift/models/start_report/start_report_model.dart';
 import 'package:moment/features/shift/view_models/snapper/bloc/snapper_shift_viewmodel.dart';
@@ -41,11 +37,11 @@ class SnapperShiftStartReportPage extends HookConsumerWidget {
         text: intToTextConverter(snapperStartReport?.startBrokenPaperSets));
     final startPrintsController = useTextEditingController(
         text: intToTextConverter(snapperStartReport?.startPrints));
-    Timer? debounce;
 
     useEffect(
       () {
         void updateShift() {
+          print("object");
           shiftViewModelNotifier.updateShiftStartReport(
             snapperShift.copyWith(
               shiftStart: snapperShift.shiftStart.copyWith(
@@ -63,10 +59,11 @@ class SnapperShiftStartReportPage extends HookConsumerWidget {
         }
 
         void updateShiftTimer() {
-          if (debounce?.isActive ?? false) debounce!.cancel();
-          debounce = Timer(const Duration(milliseconds: 2000), () {
-            updateShift();
-          });
+          EasyDebounce.debounce(
+            "updateShift",
+            const Duration(seconds: 2),
+            () => updateShift(),
+          );
         }
 
         // Add listeners to each controller to trigger the update function
@@ -78,10 +75,10 @@ class SnapperShiftStartReportPage extends HookConsumerWidget {
 
         // Cleanup listeners when the widget is disposed
         return () {
-          if (debounce?.isActive ?? false) {
-            debounce!.cancel();
-            updateShift(); // Ensures the last update is made before disposal
-          }
+          EasyDebounce.fire(
+            "updateShift",
+          );
+          EasyDebounce.cancel("updateShift");
           framesController.removeListener(updateShiftTimer);
           brokenFramesController.removeListener(updateShiftTimer);
           paperSetsController.removeListener(updateShiftTimer);
@@ -126,6 +123,7 @@ class SnapperShiftStartReportPage extends HookConsumerWidget {
                 ),
               ],
             ),
+            DDimension.bigPadding.verticalBox,
             Row(
               children: [
                 Expanded(
@@ -147,11 +145,13 @@ class SnapperShiftStartReportPage extends HookConsumerWidget {
                 ),
               ],
             ),
+            DDimension.bigPadding.verticalBox,
             buildTextField(
               context,
               controller: startPrintsController,
               label: "Paper sets in stamp",
             ),
+            DDimension.bigPadding.verticalBox,
           ],
         ),
       ),

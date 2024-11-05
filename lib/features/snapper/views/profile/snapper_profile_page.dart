@@ -6,7 +6,9 @@ import 'package:moment/core/utils/app_dialog.dart';
 import 'package:moment/features/app/injection_container.dart';
 import 'package:moment/features/app/routes/app_router.gr.dart';
 import 'package:moment/features/auth/view_models/auth_viewmodel.dart';
+import 'package:moment/features/shift/models/end_report/end_report_model.dart';
 import 'package:moment/features/shift/models/shift/shift_model.dart';
+import 'package:moment/features/shift/models/shift_end/shift_end_model.dart';
 import 'package:moment/features/shift/repos/snapper_shift_repo.dart';
 import 'package:uuid/uuid.dart';
 
@@ -30,6 +32,12 @@ class SnapperProfilePage extends HookConsumerWidget {
                     restaurantName: "Let's go",
                     startTime: DateTime.now(),
                     status: 1,
+                    shiftEnd: SnapperShiftEnd(
+                      endReport: SnapperEndReport(
+                        hourPrice: 15,
+                        framePrice: 20,
+                      ),
+                    ),
                   ),
                 );
               },
