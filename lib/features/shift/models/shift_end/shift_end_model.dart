@@ -60,7 +60,23 @@ class ShiftEndModel with _$ShiftEndModel {
           endPrintsPhoto,
           endGoogleDrivePhoto,
           endReport) {
-        return false;
+        return endWorkPlacePhoto != null &&
+            endCameraPhoto != null &&
+            endLaptopPhoto != null &&
+            endWiresPhoto != null &&
+            endLockPhoto != null &&
+            endBoxesPhoto != null &&
+            endPrintsPhoto != null &&
+            endGoogleDrivePhoto != null &&
+            endReport.startTime != null &&
+            endReport.endTime != null &&
+            endReport.soldFrameCash != null &&
+            endReport.soldFrameCard != null &&
+            endReport.endFrames != null &&
+            endReport.endBrokenFrames != null &&
+            endReport.endPaperSets != null &&
+            endReport.endBrokenPaperSets != null &&
+            endReport.endPrints != null;
       },
       assistant: (id, shiftId, createdAt, updatedAt) {
         return false;
@@ -101,7 +117,13 @@ class ShiftEndModel with _$ShiftEndModel {
           snapperShiftEnd.copyWith(endCameraPhoto: newPhoto),
         PhotoType.endLaptop =>
           snapperShiftEnd.copyWith(endLaptopPhoto: newPhoto),
+        PhotoType.endBoxes => snapperShiftEnd.copyWith(endBoxesPhoto: newPhoto),
+        PhotoType.endLock => snapperShiftEnd.copyWith(endLockPhoto: newPhoto),
         PhotoType.endWires => snapperShiftEnd.copyWith(endWiresPhoto: newPhoto),
+        PhotoType.endGoogleDrive =>
+          snapperShiftEnd.copyWith(endGoogleDrivePhoto: newPhoto),
+        PhotoType.endPrints =>
+          snapperShiftEnd.copyWith(endPrintsPhoto: newPhoto),
         _ => null,
       };
     }

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:fpdart/fpdart.dart';
+import 'package:moment/core/enums/shift_time_enum.dart';
 import 'package:moment/core/failure/failure.dart';
 import 'package:moment/core/utils/utils.dart';
 import 'package:moment/features/app/injection_container.dart';
@@ -88,8 +89,24 @@ class SnapperShiftViewModel extends _$SnapperShiftViewModel {
       },
     );
   }
-  Future<Either<AppFailure, Unit>> updateShiftStartReport(SnapperShift? shift) async {
+
+  Future<Either<AppFailure, Unit>> updateShiftStartReport(
+      SnapperShift? shift) async {
     final res = await _shiftRepo.updateShiftStartReport(shift);
+    return res.fold(
+      (l) {
+        logger.e(l.message);
+        return Left(AppFailure(l.message));
+      },
+      (r) {
+        setShift(shift);
+        return const Right(unit);
+      },
+    );
+  }
+  Future<Either<AppFailure, Unit>> updateShiftEndReport(
+      SnapperShift? shift) async {
+    final res = await _shiftRepo.updateShiftEndReport(shift);
     return res.fold(
       (l) {
         logger.e(l.message);
@@ -105,11 +122,15 @@ class SnapperShiftViewModel extends _$SnapperShiftViewModel {
   Future<Either<AppFailure, Unit>> uploadMedia(
     File file, {
     required PhotoModel newPhoto,
+    required ShiftTimeEnum shiftTimeEnum,
     bool isVideo = false,
   }) async {
     return await _queue.add(() async {
       // Attempt to prepare the shift for media upload
-      final shift = _prepareShiftForUpload(newPhoto);
+      final shift = _prepareShiftForUpload(
+        newPhoto,
+        shiftTimeEnum,
+      );
       if (shift == null) {
         return _shiftIsNullFailure();
       }
@@ -120,7 +141,7 @@ class SnapperShiftViewModel extends _$SnapperShiftViewModel {
       }
 
       // Mark the photo as loading and update the shift state
-      _setShiftLoading(shift, newPhoto);
+      _setShiftLoading(shift, newPhoto,shiftTimeEnum);
 
       // Attempt to upload the media file
       final uploadResult = await _shiftRepo.uploadMedia(
@@ -137,27 +158,42 @@ class SnapperShiftViewModel extends _$SnapperShiftViewModel {
           shift,
           newPhoto,
           imageUrl,
+          shiftTimeEnum,
         ),
       );
     });
   }
 
 // Helper function to prepare the shift for upload
-  SnapperShift? _prepareShiftForUpload(PhotoModel newPhoto) {
+  SnapperShift? _prepareShiftForUpload(
+      PhotoModel newPhoto, ShiftTimeEnum shiftTimeEnum) {
     final oldShift = state.shift?.value;
     if (oldShift == null) return null;
 
-    return oldShift.copyWith(
-      updatedAt: DateTime.now(),
-      shiftStart: oldShift.shiftStart
-          .updateShiftStartPhoto(
-            newPhoto.photoType,
-            newPhoto: newPhoto,
-          )!
-          .copyWith(
-            updatedAt: DateTime.now(),
-          ),
-    );
+    return switch (shiftTimeEnum) {
+      ShiftTimeEnum.start => oldShift.copyWith(
+          updatedAt: DateTime.now(),
+          shiftStart: oldShift.shiftStart
+              .updateShiftStartPhoto(
+                newPhoto.photoType,
+                newPhoto: newPhoto,
+              )!
+              .copyWith(
+                updatedAt: DateTime.now(),
+              ),
+        ),
+      ShiftTimeEnum.end => oldShift.copyWith(
+          updatedAt: DateTime.now(),
+          shiftEnd: oldShift.shiftEnd
+              .updateShiftEndPhoto(
+                newPhoto.photoType,
+                newPhoto: newPhoto,
+              )!
+              .copyWith(
+                updatedAt: DateTime.now(),
+              ),
+        ),
+    };
   }
 
 // Handles the scenario where shift is null
@@ -173,16 +209,28 @@ class SnapperShiftViewModel extends _$SnapperShiftViewModel {
   }
 
 // Sets the shift as loading before the upload starts
-  void _setShiftLoading(SnapperShift shift, PhotoModel newPhoto) {
-    final updatedShift = shift.copyWith(
-      shiftStart: shift.shiftStart.updateShiftStartPhoto(
-        newPhoto.photoType,
-        newPhoto: newPhoto.copyWith(
-          isLoading: true,
-          hasError: false,
+  void _setShiftLoading(
+      SnapperShift shift, PhotoModel newPhoto, ShiftTimeEnum shiftTimeEnum) {
+    final updatedShift = switch (shiftTimeEnum) {
+      ShiftTimeEnum.start => shift.copyWith(
+          shiftStart: shift.shiftStart.updateShiftStartPhoto(
+            newPhoto.photoType,
+            newPhoto: newPhoto.copyWith(
+              isLoading: true,
+              hasError: false,
+            ),
+          )!,
         ),
-      )!,
-    );
+      ShiftTimeEnum.end => shift.copyWith(
+          shiftEnd: shift.shiftEnd.updateShiftEndPhoto(
+            newPhoto.photoType,
+            newPhoto: newPhoto.copyWith(
+              isLoading: true,
+              hasError: false,
+            ),
+          )!,
+        )
+    };
     setShift(updatedShift);
   }
 
@@ -191,17 +239,30 @@ class SnapperShiftViewModel extends _$SnapperShiftViewModel {
     SnapperShift shift,
     PhotoModel newPhoto,
     String? imageUrl,
+    ShiftTimeEnum shiftTimeEnum,
   ) async {
-    final updatedShift = shift.copyWith(
-      shiftStart: shift.shiftStart.updateShiftStartPhoto(
-        newPhoto.photoType,
-        newPhoto: newPhoto.copyWith(
-          imageUrl: imageUrl,
-          isLoading: false,
-          hasError: false,
+    final updatedShift = switch (shiftTimeEnum) {
+      ShiftTimeEnum.start => shift.copyWith(
+          shiftStart: shift.shiftStart.updateShiftStartPhoto(
+            newPhoto.photoType,
+            newPhoto: newPhoto.copyWith(
+              imageUrl: imageUrl,
+              isLoading: false,
+              hasError: false,
+            ),
+          )!,
         ),
-      )!,
-    );
+      ShiftTimeEnum.end => shift.copyWith(
+          shiftEnd: shift.shiftEnd.updateShiftEndPhoto(
+            newPhoto.photoType,
+            newPhoto: newPhoto.copyWith(
+              imageUrl: imageUrl,
+              isLoading: false,
+              hasError: false,
+            ),
+          )!,
+        )
+    };
 
     // Attempt to update the shift with the new media details
     final updateRes = await _shiftRepo.updateShift(updatedShift);

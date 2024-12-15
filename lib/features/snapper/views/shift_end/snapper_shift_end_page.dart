@@ -7,6 +7,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:moment/core/constants/design_dimensions.dart';
+import 'package:moment/core/enums/shift_time_enum.dart';
 import 'package:moment/core/enums/snapper_shift_photo_type.dart';
 import 'package:moment/core/extensions/build_context_extension.dart';
 import 'package:moment/core/extensions/to_double_extension.dart';
@@ -50,15 +51,15 @@ class SnapperShiftEndPage extends HookConsumerWidget {
         child: Column(
           children: [
             SnapperShiftDetailItem(
-              shiftPhotoType: PhotoType.startClothes,
+              shiftPhotoType: PhotoType.endPrints,
               index: "1",
-              title: "Clothes Photo",
+              title: "Left prints in printer Photo",
               shift: shift,
               trailing: IconButton(
                   onPressed: () => _addPhoto(
                         shiftViewModelNotifier,
                         shift,
-                        photoType: PhotoType.startClothes,
+                        photoType: PhotoType.endPrints,
                       ),
                   icon: Icon(
                     Icons.camera_alt_outlined,
@@ -66,31 +67,15 @@ class SnapperShiftEndPage extends HookConsumerWidget {
                   )),
             ),
             SnapperShiftDetailItem(
-              shiftPhotoType: PhotoType.startWorkPlace,
+              shiftPhotoType: PhotoType.endCamera,
               index: "2",
-              shift: shift,
-              title: "Workplace Photo",
-              trailing: IconButton(
-                  onPressed: () => _addPhoto(
-                        shiftViewModelNotifier,
-                        shift,
-                        photoType: PhotoType.startWorkPlace,
-                      ),
-                  icon: Icon(
-                    Icons.camera_alt_outlined,
-                    color: context.colors.primaryColor,
-                  )),
-            ),
-            SnapperShiftDetailItem(
-              shiftPhotoType: PhotoType.startCamera,
-              index: "3",
               shift: shift,
               title: "Camera Photo",
               trailing: IconButton(
                   onPressed: () => _addPhoto(
                         shiftViewModelNotifier,
                         shift,
-                        photoType: PhotoType.startCamera,
+                        photoType: PhotoType.endCamera,
                       ),
                   icon: Icon(
                     Icons.camera_alt_outlined,
@@ -98,15 +83,15 @@ class SnapperShiftEndPage extends HookConsumerWidget {
                   )),
             ),
             SnapperShiftDetailItem(
-              shiftPhotoType: PhotoType.startLaptop,
-              index: "4",
+              shiftPhotoType: PhotoType.endLaptop,
+              index: "3",
               shift: shift,
               title: "Laptop Photo",
               trailing: IconButton(
                   onPressed: () => _addPhoto(
                         shiftViewModelNotifier,
                         shift,
-                        photoType: PhotoType.startLaptop,
+                        photoType: PhotoType.endLaptop,
                       ),
                   icon: Icon(
                     Icons.camera_alt_outlined,
@@ -114,15 +99,79 @@ class SnapperShiftEndPage extends HookConsumerWidget {
                   )),
             ),
             SnapperShiftDetailItem(
-              shiftPhotoType: PhotoType.startWires,
-              index: "5",
+              shiftPhotoType: PhotoType.endWires,
+              index: "4",
               shift: shift,
               title: "Wires Photo",
               trailing: IconButton(
                   onPressed: () => _addPhoto(
                         shiftViewModelNotifier,
                         shift,
-                        photoType: PhotoType.startWires,
+                        photoType: PhotoType.endWires,
+                      ),
+                  icon: Icon(
+                    Icons.camera_alt_outlined,
+                    color: context.colors.primaryColor,
+                  )),
+            ),
+            SnapperShiftDetailItem(
+              shiftPhotoType: PhotoType.endGoogleDrive,
+              index: "5",
+              shift: shift,
+              title: "Google Drive Photo",
+              trailing: IconButton(
+                  onPressed: () => _addPhoto(
+                        shiftViewModelNotifier,
+                        shift,
+                        photoType: PhotoType.endGoogleDrive,
+                      ),
+                  icon: Icon(
+                    Icons.camera_alt_outlined,
+                    color: context.colors.primaryColor,
+                  )),
+            ),
+            SnapperShiftDetailItem(
+              shiftPhotoType: PhotoType.endLock,
+              index: "6",
+              shift: shift,
+              title: "Lock Photo",
+              trailing: IconButton(
+                  onPressed: () => _addPhoto(
+                        shiftViewModelNotifier,
+                        shift,
+                        photoType: PhotoType.endLock,
+                      ),
+                  icon: Icon(
+                    Icons.camera_alt_outlined,
+                    color: context.colors.primaryColor,
+                  )),
+            ),
+            SnapperShiftDetailItem(
+              shiftPhotoType: PhotoType.endBoxes,
+              index: "7",
+              shift: shift,
+              title: "Boxes Photo",
+              trailing: IconButton(
+                  onPressed: () => _addPhoto(
+                        shiftViewModelNotifier,
+                        shift,
+                        photoType: PhotoType.endBoxes,
+                      ),
+                  icon: Icon(
+                    Icons.camera_alt_outlined,
+                    color: context.colors.primaryColor,
+                  )),
+            ),
+            SnapperShiftDetailItem(
+              shiftPhotoType: PhotoType.endWorkPlace,
+              index: "8",
+              shift: shift,
+              title: "Workplace Photo",
+              trailing: IconButton(
+                  onPressed: () => _addPhoto(
+                        shiftViewModelNotifier,
+                        shift,
+                        photoType: PhotoType.endWorkPlace,
                       ),
                   icon: Icon(
                     Icons.camera_alt_outlined,
@@ -133,7 +182,7 @@ class SnapperShiftEndPage extends HookConsumerWidget {
             SnapperShiftDetailItem(
               shiftPhotoType: PhotoType.none,
               shift: shift,
-              index: "6",
+              index: "9",
               title: "Shift end report",
               onTap: () => context.pushRoute(SnapperShiftEndReportRoute(
                 snapperShift: shift!,
@@ -155,7 +204,7 @@ class SnapperShiftEndPage extends HookConsumerWidget {
 
   AppBar buildAppBar(BuildContext context, SnapperShift? shift) {
     return AppBar(
-      title: Text("Shift start"),
+      title: Text("Shift End"),
       actions: [
         buildStatus(context, shift),
         DDimension.bigPadding.horizontalBox,
@@ -164,7 +213,7 @@ class SnapperShiftEndPage extends HookConsumerWidget {
   }
 
   Widget buildStatus(BuildContext context, SnapperShift? shift) {
-    return shift?.shiftStart.isCompleted ?? false
+    return shift?.shiftEnd.isCompleted ?? false
         ? ShiftStatusWidget(
             title: "Completed",
             backgroundColor: completeColor,
@@ -200,6 +249,7 @@ class SnapperShiftEndPage extends HookConsumerWidget {
         .uploadMedia(
       file,
       newPhoto: newPhoto,
+      shiftTimeEnum: ShiftTimeEnum.end,
     )
         .then(
       (res) {

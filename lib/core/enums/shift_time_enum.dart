@@ -1,0 +1,4 @@
+enum ShiftTimeEnum {
+  start,
+  end,
+}

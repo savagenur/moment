@@ -68,6 +68,19 @@ class SnapperShiftRepo {
     return Left(AppFailure(e.toString()));
   }
 }
+  Future<Either<AppFailure, Unit>> updateShiftEndReport(SnapperShift? shift) async {
+  try {
+    if (shift != null) {
+      await firestore.collection("shifts").doc(shift.id).update({
+        "shiftStart.endReport": shift.shiftEnd.endReport.toJson(),
+      });
+    }
+    return const Right(unit);
+  } catch (e) {
+    logger.e(e.toString());
+    return Left(AppFailure(e.toString()));
+  }
+}
 
   Future<Either<AppFailure, String?>> uploadMedia(
     File file, {

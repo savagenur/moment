@@ -7,6 +7,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:moment/core/constants/design_dimensions.dart';
+import 'package:moment/core/enums/shift_time_enum.dart';
 import 'package:moment/core/enums/snapper_shift_photo_type.dart';
 import 'package:moment/core/extensions/build_context_extension.dart';
 import 'package:moment/core/extensions/to_double_extension.dart';
@@ -54,6 +55,7 @@ class SnapperShiftStartPage extends HookConsumerWidget {
               index: "1",
               title: "Clothes Photo",
               shift: shift,
+              shiftTimeEnum: ShiftTimeEnum.start,
               trailing: IconButton(
                   onPressed: () => _addPhoto(
                         shiftViewModelNotifier,
@@ -69,6 +71,7 @@ class SnapperShiftStartPage extends HookConsumerWidget {
               shiftPhotoType: PhotoType.startWorkPlace,
               index: "2",
               shift: shift,
+              shiftTimeEnum: ShiftTimeEnum.start,
               title: "Workplace Photo",
               trailing: IconButton(
                   onPressed: () => _addPhoto(
@@ -85,6 +88,7 @@ class SnapperShiftStartPage extends HookConsumerWidget {
               shiftPhotoType: PhotoType.startCamera,
               index: "3",
               shift: shift,
+              shiftTimeEnum: ShiftTimeEnum.start,
               title: "Camera Photo",
               trailing: IconButton(
                   onPressed: () => _addPhoto(
@@ -101,6 +105,7 @@ class SnapperShiftStartPage extends HookConsumerWidget {
               shiftPhotoType: PhotoType.startLaptop,
               index: "4",
               shift: shift,
+              shiftTimeEnum: ShiftTimeEnum.start,
               title: "Laptop Photo",
               trailing: IconButton(
                   onPressed: () => _addPhoto(
@@ -117,6 +122,7 @@ class SnapperShiftStartPage extends HookConsumerWidget {
               shiftPhotoType: PhotoType.startWires,
               index: "5",
               shift: shift,
+              shiftTimeEnum: ShiftTimeEnum.start,
               title: "Wires Photo",
               trailing: IconButton(
                   onPressed: () => _addPhoto(
@@ -135,7 +141,7 @@ class SnapperShiftStartPage extends HookConsumerWidget {
               shift: shift,
               index: "6",
               title: "Shift start report",
-              onTap: () => context.pushRoute( SnapperShiftStartReportRoute(
+              onTap: () => context.pushRoute(SnapperShiftStartReportRoute(
                 snapperShift: shift!,
               )),
               trailing: _isStartReportCompleted((shift?.shiftStart))
@@ -200,6 +206,7 @@ class SnapperShiftStartPage extends HookConsumerWidget {
         .uploadMedia(
       file,
       newPhoto: newPhoto,
+      shiftTimeEnum: ShiftTimeEnum.start,
     )
         .then(
       (res) {

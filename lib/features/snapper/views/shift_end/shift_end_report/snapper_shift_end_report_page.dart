@@ -13,6 +13,7 @@ import 'package:moment/core/enums/printer_type.dart';
 import 'package:moment/core/extensions/build_context_extension.dart';
 import 'package:moment/core/extensions/to_double_extension.dart';
 import 'package:moment/features/app/constants/constants.dart';
+import 'package:moment/features/shift/models/end_report/end_report_model.dart';
 import 'package:moment/features/shift/models/shift/shift_model.dart';
 import 'package:moment/features/shift/view_models/snapper/bloc/snapper_shift_viewmodel.dart';
 
@@ -43,6 +44,9 @@ class SnapperShiftEndReportPage extends HookConsumerWidget {
     final shiftViewModelNotifier =
         ref.read(snapperShiftViewModelProvider.notifier);
     final snapperEndReport = snapperShift.shiftEnd.endReport;
+    DateTime? startTime = snapperEndReport.startTime;
+    DateTime? endTime = snapperEndReport.endTime;
+
     final startTimeController = useTextEditingController(
         text: dateToTextConverter(snapperEndReport.startTime));
     final endTimeController = useTextEditingController(
@@ -98,29 +102,38 @@ class SnapperShiftEndReportPage extends HookConsumerWidget {
         ),
       ),
     );
+
     useEffect(
       () {
-        // void updateShift() {
-        //   shiftViewModelNotifier.updateShiftStartReport(
-        //     snapperShift.copyWith(
-        //       shiftStart: snapperShift.shiftStart.copyWith(
-        //         startReport: SnapperStartReport(
-        //           startFrames: textToIntConverter(framesController),
-        //           startBrokenFrames: textToIntConverter(brokenFramesController),
-        //           startPaperSets: textToIntConverter(paperSetsController),
-        //           startBrokenPaperSets:
-        //               textToIntConverter(brokenPaperSetsController),
-        //           startPrints: textToIntConverter(startPrintsController),
-        //         ),
-        //       ),
-        //     ),
-        //   );
-        // }
+        void updateShift() {
+          shiftViewModelNotifier.updateShiftEndReport(
+            snapperShift.copyWith(
+              shiftEnd: snapperShift.shiftEnd.copyWith(
+                endReport: snapperShift.shiftEnd.endReport.copyWith(
+                  startTime: DateTime.now(),
+                  endTime: DateTime.now(),
+                  salarySupplement: double.parse(soldFrameCashController.text),
+                  taxiPrice: double.parse(soldFrameCashController.text),
+                  other: double.parse(soldFrameCashController.text),
+                  lostFrame: int.parse(soldFrameCashController.text),
+                  soldFrameCash: int.parse(soldFrameCashController.text),
+                  soldFrameCard: int.parse(soldFrameCashController.text),
+                  paperSetSupply: int.parse(soldFrameCashController.text),
+                  endFrames: int.parse(soldFrameCashController.text),
+                  endBrokenFrames: int.parse(soldFrameCashController.text),
+                  endPaperSets: int.parse(soldFrameCashController.text),
+                  endBrokenPaperSets: int.parse(soldFrameCashController.text),
+                  endPrints: int.parse(soldFrameCashController.text),
+                ),
+              ),
+            ),
+          );
+        }
 
         void updateShiftTimer() {
           if (debounce?.isActive ?? false) debounce!.cancel();
           debounce = Timer(const Duration(milliseconds: 2000), () {
-            // updateShift();
+            updateShift();
           });
         }
 
@@ -314,11 +327,24 @@ class SnapperShiftEndReportPage extends HookConsumerWidget {
                 context,
                 textInputAction: TextInputAction.next,
                 onTap: () async {
+                  startTime = await showDatePicker(
+                    context: context,
+                    initialDate: startTime??DateTime.now(),
+                    firstDate: DateTime(2020),
+                    lastDate: DateTime.now(),
+                  );
+                  if (startTime == null) return;
+
                   final timeOfDay = await showTimePicker(
                     context: context,
-                    initialTime: TimeOfDay.now(),
+                    initialTime: TimeOfDay.fromDateTime(
+                      startTime!,
+                    ),
                   );
-                  if (timeOfDay != null) {
+
+                  if (timeOfDay == null) {
+                    startTime = null;
+                  } else {
                     startTimeController.text =
                         TimeOfDayConverter.toText(timeOfDay);
                   }
